@@ -35,8 +35,13 @@ if (session_is_registered("authentification")){ // v&eacute;rification sur la se
 	{
 	// *** Affichage mode debug ***
 	echo '#   '.$_POST['cmd'].'   #<br>';
-	if($_POST['cmd'] == 'Effacer Fichier Log'){$commande = $cmd_SYS_Delete_log;}  
+	if($_POST['cmd'] == 'Effacer Fichier Log')
+	{ 
+		if($_POST['versionLog'] == "32"){$commande = $cmd_SYS_Delete_log32;}
+		if($_POST['versionLog'] == "64"){$commande = $cmd_SYS_Delete_log64;}
+	}  
 	if($_POST['cmd'] == 'Refresh'){$commande = $cmd_SYS_etat_OS2;}  
+	if($_POST['cmd'] == 'Effacer Fichier XLog'){$commande = $cmd_SYS_Delete_Xlog;}  
 	
 //**************************************************************************
 // Envoi de la commande par ssh  *******************************************
@@ -69,31 +74,56 @@ if($commande <> ''){
 		}
 	}
 	}
+	
 	//******************************************************
+	//********** Test du fichier log 32bit / 64bit
+	$fichierXLog = INI_Conf_Moteur($_SESSION['opensim_select'],"address").'XEngine.log';
+	if(file_exists($fichierXLog)) { $versionlog = "xlog";
+	echo "Fichier existant ";$fichierXLog = INI_Conf_Moteur($_SESSION['opensim_select'],"address").'XEngine.log'; echo 'XEngine.log<br>';}	
+
+	$fichierLog32 = INI_Conf_Moteur($_SESSION['opensim_select'],"address").'OpenSim.log';
+	if(file_exists($fichierLog32)) { $versionlog = "32";
+	echo "Fichier existant ";$fichierLog = INI_Conf_Moteur($_SESSION['opensim_select'],"address").'OpenSim.log'; echo 'OpenSim.log<br>';}	
+
+	$fichierLog64 = INI_Conf_Moteur($_SESSION['opensim_select'],"address").'OpenSim.32BitLaunch.log';
+	if(file_exists($fichierLog64)) { $versionlog = "64";
+	echo "Fichier existant ";$fichierLog = INI_Conf_Moteur($_SESSION['opensim_select'],"address").'OpenSim.32BitLaunch.log';echo 'OpenSim.32BitLaunch.log<br>';}
+
+	$taille_fichier = filesize($fichierLog);
+	if ($taille_fichier >= 1073741824) {$taille_fichier = round($taille_fichier / 1073741824 * 100) / 100 . " Go";	}
+	elseif ($taille_fichier >= 1048576) {$taille_fichier = round($taille_fichier / 1048576 * 100) / 100 . " Mo";	}
+	elseif ($taille_fichier >= 1024) {$taille_fichier = round($taille_fichier / 1024 * 100) / 100 . " Ko";	}
+	else {$taille_fichier = $taille_fichier . " o";	} 
+	//echo ' Taille du Fichier Log: '. $taille_fichier.' <BR><hr>';
+
+	$taille_fichierX = filesize($fichierXLog);
+	if ($taille_fichierX >= 1073741824) {$taille_fichierX = round($taille_fichierX / 1073741824 * 100) / 100 . " Go";	}
+	elseif ($taille_fichierX >= 1048576) {$taille_fichierX = round($taille_fichierX / 1048576 * 100) / 100 . " Mo";	}
+	elseif ($taille_fichierX >= 1024) {$taille_fichierX = round($taille_fichierX / 1024 * 100) / 100 . " Ko";	}
+	else {$taille_fichierX = $taille_fichierX . " o";	} 
+	//echo ' Taille du Fichier Log: '. $taille_fichierX.' <BR><hr>';
+	
 	echo '<table width="100%" BORDER=0><tr>';
-	echo '<td><FORM METHOD=POST ACTION=""><INPUT TYPE="submit" VALUE="Refresh" NAME="cmd" '.$btnN1.'><INPUT TYPE="hidden" VALUE="'.$key.'" NAME="name_sim"></FORM></td>';
-	echo '<td><FORM METHOD=POST ACTION=""><INPUT TYPE="submit" VALUE="Effacer Fichier Log" NAME="cmd" '.$btnN3.'><INPUT TYPE="hidden" VALUE="'.$key.'" NAME="name_sim"></FORM></td>';
+	echo '<td><FORM METHOD=POST ACTION=""><INPUT TYPE="submit" VALUE="Refresh" NAME="cmd" '.$btnN1.'></FORM></td>';
+	echo '<td><FORM METHOD=POST ACTION=""><INPUT TYPE="submit" VALUE="Effacer Fichier Log" NAME="cmd" '.$btnN3.'><INPUT TYPE="hidden" VALUE="'.$versionlog.'" NAME="versionLog"></FORM></td>';
+	echo '<td><FORM METHOD=POST ACTION=""><INPUT TYPE="submit" VALUE="Effacer Fichier XLog" NAME="cmd" '.$btnN3.'><INPUT TYPE="hidden" VALUE="'.$versionlog.'" NAME="versionXLog"></FORM></td>';
 	echo '</tr></table>';
 	
-	$taille_fichier = filesize(INI_Conf_Moteur($_SESSION['opensim_select'],"address").'OpenSim.log');
-	if ($taille_fichier >= 1073741824) 
-	{		$taille_fichier = round($taille_fichier / 1073741824 * 100) / 100 . " Go";	}
-	elseif ($taille_fichier >= 1048576) 
-	{		$taille_fichier = round($taille_fichier / 1048576 * 100) / 100 . " Mo";	}
-	elseif ($taille_fichier >= 1024) 
-	{		$taille_fichier = round($taille_fichier / 1024 * 100) / 100 . " Ko";	}
-	else 
-	{		$taille_fichier = $taille_fichier . " o";	} 
-	echo 'Taille du Fichier Log: '. $taille_fichier.' <BR><hr>';
-	
-	
-	$fcontents = file( INI_Conf_Moteur($_SESSION['opensim_select'],"address").'OpenSim.log');
-	$i = sizeof($fcontents)-50;
+	echo '<table border=1><tr><td><b> Opensim Log # Taille du Fichier Log: '. $taille_fichier.'</b></td><td><b> XEngine Log # Taille du Fichier Log: '.$taille_fichierX.'</b></td></tr><tr><td>';
+	$fcontents = file($fichierLog);
+	$i = sizeof($fcontents)-25;
 	while ($fcontents[$i]!="")
-		{
-		$aff .= $fcontents[$i].'<br>';
-		$i++;
-		}
-	echo '<font t size="1">'.$aff.'</font>';
+		{$aff .= $fcontents[$i].'<br>';$i++;}
+	echo '<font t size="1">'.$aff.'</font><hr>';
+	echo '</td>';
+	
+	echo '<td>';
+	$fcontentsX = file($fichierXLog);
+	$i = sizeof($fcontentsX)-25;
+	while ($fcontentsX[$i]!="")
+		{$aff1 .= $fcontentsX[$i].'<br>';$i++;}
+	echo '<font t size="1">'.$aff1.'</font>';
+	echo '</td></tr></table>';
+	
 }else{header('Location: index.php');   }
 ?>

@@ -40,7 +40,7 @@ for($x=-30;$x < 30;$x++) 		// Limite de 50x50
 		// Pour chaque serveur
 		$tableauIni = parse_ini_file($data['address']."Regions/Regions.ini", true);
 		if($tableauIni == FALSE){echo 'prb lecture ini '.$data['address']."Regions/Regions.ini".'<br>';}
-		echo '<hr>Serveur Name:'.$data['name'].' - Version:'.$data['version'].'<br>';
+	//	echo '<hr>Serveur Name:'.$data['name'].' - Version:'.$data['version'].'<br>';
 		while (list($keyi, $vali) = each($tableauIni))
 		{
 			// **** Recuperation du port http du serveur ******		
@@ -60,7 +60,7 @@ for($x=-30;$x < 30;$x++) 		// Limite de 50x50
 				}
 				fclose($fp);
 			//****************************************************	
-		
+	
 			//*******************************************************
 			// Recuperation des valeurs ET enregistrement des valeurs dans le tableau
 			//echo $key.$tableauIni[$key]['RegionUUID'].$tableauIni[$key]['Location'].$tableauIni[$key]['InternalPort'].'<br>';

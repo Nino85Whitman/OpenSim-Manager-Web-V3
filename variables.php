@@ -28,8 +28,10 @@ $cmd_SYS_start = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";
 $cmd_SYS_etat_OS = "ps -e |grep mono";
 $cmd_SYS_etat_OS2 = "screen -list";
 $cmd_SYS_Version_mono = "mono -V";
-$cmd_SYS_Delete_log = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";chmod 777 OpenSim.log;rm OpenSim.log";
+$cmd_SYS_Delete_log32 = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";chmod 777 OpenSim.log;rm OpenSim.log";
+$cmd_SYS_Delete_log64 = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";chmod 777 OpenSim.32BitLaunch.log;rm OpenSim.32BitLaunch.log";
 $cmd_SYS_Delete_file = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";chmod 777 ";
+$cmd_SYS_Delete_Xlog = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";chmod 777 XEngine.log;rm XEngine.log";
 //*************************************************************************************
 
 $MENU_LATTERALE = '<div id="menu"><ul>

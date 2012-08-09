@@ -15,7 +15,7 @@ include 'osmw_conf.php';
 
 if($_GET['a']=='logout'){$_SESSION = array();session_destroy();session_unset();}
 
-	session_start(); // On relaye la session
+session_start(); // On relaye la session
 	//******************************************************
 	$btnN1 = "disabled"; $btnN2 = "disabled"; $btnN3 = "disabled";
 	if( $_SESSION['privilege']==4){$btnN1="";$btnN2="";$btnN3="";}		//  Niv 4	Super Administrateur
@@ -86,9 +86,9 @@ if (session_is_registered("authentification")){ // vérification sur la session a
 		if($_GET['a']){$vers = $_GET['a'];}
 			//***************************************************************************
 			//**************		V3 = Configuration par Base de donnée + SECU MOTEURS SUR PROFIL NIV 1
-			// 	 				index.php																				RESTE A FAIRE
+			// 	 				index.php																				
 			if($vers =="1"){include('GestSims.php');}								// V3	# Gestion sim
-			if($vers =="2"){include('GestSaveRestore.php');}						// V3	# Gestion backup
+			if($vers =="2"){include('GestSaveRestore.php');}						// V3	# Gestion backup sim
 			if($vers =="3"){include('GestTerrain.php');}							// V3	# Gestion Terrain
 			if($vers =="4"){include('GestImportExport.php');}  						// V3 	# Exporter un inventaire
 			if($vers =="5"){include('GestOpensim.php');}			// admin		// V3	# Gestion des fichiers de conf INI pour Opensim 
@@ -102,7 +102,7 @@ if (session_is_registered("authentification")){ // vérification sur la session a
 			if($vers =="13"){include('Aide.php');}  								// V3	# Aide
 			if($vers =="14"){include('Apropos.php');}  								// V3	# Les remerciements
 			if($vers =="15"){include('GestUsers.php');}				// admin		// V3	# Gestion des utilisateurs
-		//	if($vers =="16"){include('GestAdmin.php');}				// super admin	// V** 								* Connectivité grille 
+			if($vers =="16"){include('GestBackup.php');}			// admin		// V3	# Gestion des sauvegardes
 			if($vers =="17"){include('GestMoteur.php');}			// admin		// V3	# Gestion des moteurs
 			if($vers =="18"){include('GestConfig.php');}			// admin		// V3	# Configuration de OSMW
 		//	if($vers =="19"){include('GestXMLRPC.php');}			// admin		// V**								experimental
@@ -180,7 +180,7 @@ if (session_is_registered("authentification")){ // vérification sur la session a
 		echo '<div class="block" id="pale-blue"><a href="?a=18"><button>Configuration de OpenSim Manager Web.</button></a></div>';	
 		echo '<div class="block" id="pale-blue"><a href="?a=15"><button>Gestion des Utilisateurs.</button></a></div>';
 		echo '<div class="block" id="pale-blue"><a href="?a=12"><button>Connectivité du Serveur OSMW.</button></a></div>';
-	//	echo '<div class="block" id="pale-blue"><a href="?a=16"><button>* Connectivité GRID du Serveur OSMW.</button></a></div>';
+		echo '<div class="block" id="pale-blue"><a href="?a=16"><button>* Gestion des Sauvegardes.</button></a></div>';
 	//	echo '<div class="block" id="pale-blue"><a href="?a=19"><button>Gestion XMLRPC.*</button></a></div>';
 		echo '<HR>';
 	}
