@@ -26,7 +26,7 @@ if($_POST['cmd'])
 
 	if($_POST['cmd'] == 'Enregistrer')
 	{	
-			$sqlIns = "UPDATE `OSMW`.`conf` SET `cheminAppli` = '".$_POST['cheminAppli']."',`destinataire` = '".$_POST['destinataire']."',`Autorized` = '".$_POST['Autorized']."',`VersionOSMW` = '".$_POST['VersionOSMW']."',`urlOSMW` = '".$_POST['urlOSMW']."' WHERE `conf`.`id` =1";
+			$sqlIns = "UPDATE `conf` SET `cheminAppli` = '".$_POST['cheminAppli']."',`destinataire` = '".$_POST['destinataire']."',`Autorized` = '".$_POST['Autorized']."',`VersionOSMW` = '".$_POST['VersionOSMW']."',`urlOSMW` = '".$_POST['urlOSMW']."' WHERE `conf`.`id` =1";
 			$reqIns = mysql_query($sqlIns) or die('Erreur SQL !<br>'.$sqlIns.'<br>'.mysql_error());
 			echo "Configuration Enregistré";
 	}

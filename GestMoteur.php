@@ -37,14 +37,14 @@ if($_POST['cmd'])
 		} 
 		if($_POST['cmd'] == 'Enregistrer')
 		{	
-			$sqlIns = "INSERT INTO `OSMW`.`moteurs` (`osAutorise` ,`id_os` ,`name` ,`version` ,`address` ,`DB_OS`)VALUES (NULL , '".$_POST['NewName']."', '".$_POST['NewName']."', '".$_POST['version']."', '".$_POST['address']."', '".$_POST['DB_OS']."')";
+			$sqlIns = "INSERT INTO `moteurs` (`osAutorise` ,`id_os` ,`name` ,`version` ,`address` ,`DB_OS`)VALUES (NULL , '".$_POST['NewName']."', '".$_POST['NewName']."', '".$_POST['version']."', '".$_POST['address']."', '".$_POST['DB_OS']."')";
 			$reqIns = mysql_query($sqlIns) or die('Erreur SQL !<br>'.$sqlIns.'<br>'.mysql_error());
 			echo "Moteur Enregistré <br>";
 		} 
 
 		if($_POST['cmd'] == 'Supprimer')
 		{			
-			$sqlIns = "DELETE FROM `OSMW`.`moteurs` WHERE `moteurs`.`osAutorise` = ".$_POST['osAutorise'];
+			$sqlIns = "DELETE FROM `moteurs` WHERE `moteurs`.`osAutorise` = ".$_POST['osAutorise'];
 			$reqIns = mysql_query($sqlIns) or die('Erreur SQL !<br>'.$sqlIns.'<br>'.mysql_error());
 			echo "Moteur Supprimé <br>";
 		} 
