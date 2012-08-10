@@ -1,5 +1,5 @@
 <?php 
-include 'variables.php';
+include 'config/variables.php';
 	echo '<HR>';
 	$ligne1 = '<B>Map des regions pour le serveur.</B>';
 	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.$_SESSION['opensim_select'].' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';

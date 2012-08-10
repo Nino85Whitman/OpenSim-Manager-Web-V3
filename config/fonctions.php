@@ -30,7 +30,7 @@ function ExtractValeur($chaine){
 }			
 //*************************************************************************************
 function INI_Conf($cles,$valeur){
-	require 'osmw_conf.php';
+	require 'config/osmw_conf.php';
 	
 	// on se connecte à MySQL
 		$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
@@ -62,7 +62,7 @@ function INI_Conf($cles,$valeur){
 }
 //*************************************************************************************
 function INI_Conf_Moteur($cles,$valeur){
-	require 'osmw_conf.php';
+	require 'config/osmw_conf.php';
 	
 	// on se connecte à MySQL
 		$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
@@ -94,7 +94,7 @@ function INI_Conf_Moteur($cles,$valeur){
 }
 //*************************************************************************************
 function NbOpensim(){
-	require 'osmw_conf.php';
+	require 'config/osmw_conf.php';
 	// on se connecte à MySQL
 	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
 	mysql_select_db($database,$db);
@@ -111,8 +111,8 @@ function NbOpensim(){
 //*************************************************************************************
 function Creation_ConfigINI(){
  
-$cheminComplot = $_SERVER['SCRIPT_FILENAME'];
-$chemin = explode("/", $cheminComplot);
+$cheminComplet = $_SERVER['SCRIPT_FILENAME'];
+$chemin = explode("/", $cheminComplet);
 
 	$fp = fopen ("config.ini.php", "w+");  
 	fputs($fp,"[Parametre_OSMW]\r\n");

@@ -19,7 +19,7 @@ if (session_is_registered("authentification"))
 			<br>Pour toutes informations, contacter moi ! <b><a href="mailto:contact@fgagod.net">contact@fgagod.net</a></b><br>
 			<hr>
 <center><br><u><b>Pour aider au developpement de OpenSim Manager Web</b></u><br><br>
-<a href="paypal_don.html" TARGET="_blank"><img src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donateCC_LG.gif"></a>
+<a href="pages/paypal_don.html" TARGET="_blank"><img src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donateCC_LG.gif"></a>
 </center>
 
 			';

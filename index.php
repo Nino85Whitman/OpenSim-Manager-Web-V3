@@ -9,9 +9,9 @@
 <body>
 <?php 
 
-include 'fonctions.php';
-include 'variables.php';
-include 'osmw_conf.php';
+include 'config/fonctions.php';
+include 'config/variables.php';
+include 'config/osmw_conf.php';
 
 if($_GET['a']=='logout'){$_SESSION = array();session_destroy();session_unset();}
 
@@ -78,8 +78,8 @@ if (session_is_registered("authentification")){ // vérification sur la session a
 	echo $MENU_LATTERALE.'<HR>';
 	
 	// ********** Page appelé pour le telechargement de fichier
-	if($_GET['f']){include('GestDirectory.php');exit;}	 
-	if($_GET['g']){include('GestBackup.php');echo $PIED_DE_PAGE;exit;}	 
+	if($_GET['f']){include('pages/GestDirectory.php');exit;}	 
+	if($_GET['g']){include('pages/GestBackup.php');echo $PIED_DE_PAGE;exit;}	 
 	// REDIRECTION DES PAGES *************************************************************
 	if($_POST['a'] or $_GET['a']){
 		if($_POST['a']){$vers = $_POST['a'];}
@@ -87,25 +87,26 @@ if (session_is_registered("authentification")){ // vérification sur la session a
 			//***************************************************************************
 			//**************		V3 = Configuration par Base de donnée + SECU MOTEURS SUR PROFIL NIV 1
 			// 	 				index.php																				
-			if($vers =="1"){include('GestSims.php');}								// V3	# Gestion sim
-			if($vers =="2"){include('GestSaveRestore.php');}						// V3	# Gestion backup sim
-			if($vers =="3"){include('GestTerrain.php');}							// V3	# Gestion Terrain
-			if($vers =="4"){include('GestImportExport.php');}  						// V3 	# Exporter un inventaire
-			if($vers =="5"){include('GestOpensim.php');}			// admin		// V3	# Gestion des fichiers de conf INI pour Opensim 
-			if($vers =="6"){include('GestRegion.php');}				// admin		// V3	# Gestion des Regions par moteur
-			if($vers =="7"){include('GestLog.php');}								// V3	# Gestion du Log
-			if($vers =="8"){include('GestAdminServ.php');}			// admin		// V3	# Gestion du serveur
-			if($vers =="9"){include('contact.php');}								// V3	# Helpdesk Utilisateur
-			if($vers =="10"){include('GestDirectory.php');}							// V3	# Gestion des Fichiers
-			if($vers =="11"){include('map.php');}									// V3	# MAP
-			if($vers =="12"){include('GestIdentite.php');}			// admin		// V3	#Connection a Admin Grille OSMW 
-			if($vers =="13"){include('Aide.php');}  								// V3	# Aide
-			if($vers =="14"){include('Apropos.php');}  								// V3	# Les remerciements
-			if($vers =="15"){include('GestUsers.php');}				// admin		// V3	# Gestion des utilisateurs
-			if($vers =="16"){include('GestBackup.php');}			// admin		// V3	# Gestion des sauvegardes
-			if($vers =="17"){include('GestMoteur.php');}			// admin		// V3	# Gestion des moteurs
-			if($vers =="18"){include('GestConfig.php');}			// admin		// V3	# Configuration de OSMW
+			if($vers =="1"){include('pages/GestSims.php');}								// V3	# Gestion sim
+			if($vers =="2"){include('pages/GestSaveRestore.php');}						// V3	# Gestion backup sim
+			if($vers =="3"){include('pages/GestTerrain.php');}							// V3	# Gestion Terrain
+			if($vers =="4"){include('pages/GestImportExport.php');}  						// V3 	# Exporter un inventaire
+			if($vers =="5"){include('pages/GestOpensim.php');}			// admin		// V3	# Edition des fichiers de conf Opensim propre au moteur
+			if($vers =="6"){include('pages/GestRegion.php');}				// admin		// V3	# Gestion des Regions par moteur
+			if($vers =="7"){include('pages/GestLog.php');}								// V3	# Gestion du Log
+			if($vers =="8"){include('pages/GestAdminServ.php');}			// admin		// V3	# Gestion du serveur
+			if($vers =="9"){include('pages/contact.php');}								// V3	# Helpdesk Utilisateur
+			if($vers =="10"){include('pages/GestDirectory.php');}							// V3	# Gestion des Fichiers
+			if($vers =="11"){include('pages/map.php');}									// V3	# MAP
+			if($vers =="12"){include('pages/GestIdentite.php');}			// admin		// V3	#Connection a Admin Grille OSMW 
+			if($vers =="13"){include('pages/Aide.php');}  								// V3	# Aide
+			if($vers =="14"){include('pages/Apropos.php');}  								// V3	# Les remerciements
+			if($vers =="15"){include('pages/GestUsers.php');}				// admin		// V3	# Gestion des utilisateurs
+			if($vers =="16"){include('pages/GestBackup.php');}			// admin		// V3	# Gestion des sauvegardes
+			if($vers =="17"){include('pages/GestMoteur.php');}			// admin		// V3	# Gestion des moteurs
+			if($vers =="18"){include('pages/GestConfig.php');}			// admin		// V3	# Configuration de OSMW
 		//	if($vers =="19"){include('GestXMLRPC.php');}			// admin		// V**								experimental
+			if($vers =="20"){include('pages/GestTransfert.php');}			// admin		// V3	# Permet le transfert de fichier 
 			if($vers =="logout"){session_start();$_SESSION = array();session_destroy();session_unset();header('Location: index.php');  }	
 	}
 	else
@@ -180,7 +181,8 @@ if (session_is_registered("authentification")){ // vérification sur la session a
 		echo '<div class="block" id="pale-blue"><a href="?a=18"><button>Configuration de OpenSim Manager Web.</button></a></div>';	
 		echo '<div class="block" id="pale-blue"><a href="?a=15"><button>Gestion des Utilisateurs.</button></a></div>';
 		echo '<div class="block" id="pale-blue"><a href="?a=12"><button>Connectivité du Serveur OSMW.</button></a></div>';
-		echo '<div class="block" id="pale-blue"><a href="?a=16"><button>* Gestion des Sauvegardes.</button></a></div>';
+		echo '<div class="block" id="pale-blue"><a href="?a=16"><button>Sauvegardes config Opensim.</button></a></div>';
+		echo '<div class="block" id="pale-blue"><a href="?a=20"><button>* Transfert des Sauvegardes.</button></a></div>';
 	//	echo '<div class="block" id="pale-blue"><a href="?a=19"><button>Gestion XMLRPC.*</button></a></div>';
 		echo '<HR>';
 	}
@@ -206,7 +208,7 @@ else{		session_start();$_SESSION = array();session_destroy();session_unset();
 		  <?php } ?></strong></p>
 	<CENTER><table  border="0" cellpadding="10" cellspacing="0"  border="1" >
 		<tr><td colspan="2" align="center">
-			<img src="logoserver.png"  BORDER=1>
+			<img src="images/logoserver.png"  BORDER=1>
 			<br><br><div class="block" id="pale-blue"><button>Authentification</button></div>
 		</td></tr>
 		<tr><td>&nbsp; Firstname </td><td><input name="firstname" type="text" id="firstname"></td></tr>

@@ -1,5 +1,5 @@
 <?php 
-include 'variables.php';
+include 'config/variables.php';
 
 
 if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 

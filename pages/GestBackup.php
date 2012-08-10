@@ -1,10 +1,10 @@
 <?php 
-include 'variables.php';
+include 'config/variables.php';
 
-if (session_is_registered("authentification") && $_SESSION['privilege']==4){ // v&eacute;rification sur la session authentification 
+if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
 	if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<HR>';
-	$ligne1 = '<B>Gestion des sauvegardes pour les moteurs Opensim et de OpenSim Manager Web.</B>';
+	$ligne1 = '<B>Gestion des sauvegardes pour les moteurs Opensim.</B>';
 	$ligne2 = '<br>>>> Destination: <b>'.INI_Conf_Moteur($_SESSION['opensim_select'],"address").'</b> <<<';
 	echo '<div class="block" id="clean-gray"><button><CENTER>'.$ligne1.'<br>'.$ligne2.'</CENTER></button></div>';
 	//echo '<hr>';
@@ -26,14 +26,26 @@ if($_POST['cmd'])
 		
 	if($_POST['cmd'] == 'Sauvegarde fichiers opensim')
 	{
-		echo $_POST['name_sim'];
-		$commande = 'cd /var/www/OSMW;while read line; do tar -P -c -T - -f '.INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_sim'].'_archive_confOS.tar.gz; done < liste_fichiers.txt';
+	//	echo $_POST['name_sim'];
+	//	echo  $_SERVER['DOCUMENT_ROOT'];
+	
+	$fp = fopen ("files/liste_fichiersOS.txt", "w+");
+	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."ScreenSend"."\r\n");
+	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."RunOpensim.sh"."\r\n");	
+	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.ini"."\r\n");				
+	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini"."\r\n");
+	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."config-include/FlotsamCache.ini"."\r\n");	
+	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."config-include/GridCommon.ini"."\r\n");
+//	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.log"."\r\n");
+//	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.32BitLaunch.log"."\r\n");
+	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."startuplogo.txt"."\r\n");
+	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."startup_commands.txt"."\r\n");
+	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."shutdown_commands.txt"."\r\n");
+	fclose ($fp);
+	
+	echo	$commande = 'cd '.$_SERVER['DOCUMENT_ROOT'].$cheminWeb.'files;while read line; do tar -P -c -T - -f '.INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_sim'].'_archive_conf_OS.tar.gz; done < liste_fichiersOS.txt';
 	}	
-	if($_POST['cmd'] == 'Archiver Moteur')
-	{
-		echo $_POST['name_sim'];
-	//	$commande = 'cd /var/www/OSMW;while read line; do tar -P -c -T - -f '.INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_sim'].'_archive_confOS.tar.gz; done < liste_fichiers.txt';
-	}
+
 }
 
 if($_GET['g']){  $commande = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";rm ".$_GET['g'];}
@@ -90,7 +102,7 @@ if($commande <> '')
 			echo '<option value="'.$data['id_os'].'" '.$sel.'>'.$data['name'].' - '.$data['version'].'</option>';
 		}
 	mysql_close();	
-	echo'</select><INPUT TYPE="submit" "VALUE="Choisir" ><INPUT TYPE="submit" VALUE="Archiver Moteur" NAME="cmd" ><INPUT TYPE="hidden" VALUE="'.$_SESSION['opensim_select'].'" NAME="name_sim"></FORM></CENTER><hr>';
+	echo'</select><INPUT TYPE="submit" VALUE="Choisir" ></FORM></CENTER><hr>';
 	//**************************************************************************
 	
 	
@@ -139,7 +151,7 @@ $cheminPhysique = INI_Conf_Moteur($_SESSION['opensim_select'],"address");
 $Address = $hostnameSSH;		
 		
 		
-		/* infos à extraire */
+/* infos à extraire */
 function addScheme($entry,$base,$type) {
   $tab['name'] = $entry;
   $tab['type'] = filetype($base."/".$entry);
@@ -206,14 +218,13 @@ function list_file($cur) {
     usort($tab_dir,"cmp_".$order);
     usort($tab_file,"cmp_".$order);
     /* affichage */
-
+//*********************************************************************************************************
     echo "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
     echo "<tr style=\"font-size:8pt;font-family:arial;\">
     <th>".(($order=='name')?(($asc=='a')?'/\\ ':'\\/ '):'')."Nom</th><td>&nbsp;</td>
     <th>".(($order=='size')?(($asc=='a')?'/\\ ':'\\/ '):'')."Taille</th><td>&nbsp;</td>
 	<th>".(($order=='date')?(($asc=='a')?'/\\ ':'\\/ '):'')."Derniere modification</th><td>&nbsp;</td>
 	</tr>";
-//*********************************************************************************************************
 //*********************************************************************************************************
     foreach($tab_file as $elem) 
 	{
@@ -235,12 +246,9 @@ function list_file($cur) {
     }
     echo "</table>";
     closedir($dir);
+//*********************************************************************************************************	
   }
 }
-
-//*********************************************************************************************************
-//*********************************************************************************************************
-
 /* formatage de la taille */
 function formatSize($s) {
   /* unites */
@@ -435,12 +443,7 @@ $i=0;
 	}
 	//**************************************************************************	
 echo '</tr></table><HR>';
-
-
-	
-//***********************************************************************************************	
-
-//******************************************************		
+//***********************************************************************************************		
 mysql_close();			
 }else{header('Location: index.php');   }
 ?>

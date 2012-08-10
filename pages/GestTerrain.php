@@ -1,12 +1,13 @@
 <?php 
-include 'variables.php';
+include 'config/variables.php';
 
 if (session_is_registered("authentification")){ // v&eacute;rification sur la session authentification 
 	echo '<HR>';
-	$ligne1 = '<B>Gestion des Sauvegardes.</B>';
+	$ligne1 = '<B>Gestion des Terrains connectes.</B>';
 	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.$_SESSION['opensim_select'].' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';
 	echo '<div class="block" id="clean-gray"><button><CENTER>'.$ligne1.'<br>'.$ligne2.'</CENTER></button></div>';
 	echo '<hr>';
+	
 	//*****************************************************
 	// Si NIV 1 - Verification Moteur Autorisé ************
 	if($_SESSION['osAutorise'] != '')
@@ -28,21 +29,25 @@ if (session_is_registered("authentification")){ // v&eacute;rification sur la se
 //******************************************************
 // CONSTRUCTION de la commande pour ENVOI sur la console via  SSH
 //******************************************************
-if($_POST['cmd'])
-{
+	if($_POST['cmd'])
+	{
 	// *** Affichage mode debug ***
 	//echo $_POST['cmd'];
 	/*		echo $_POST['name_sim'];	echo '<BR><HR>';
 	*/	
-		if($_POST['format_backup'] == 'OAR'){$format_backup = "oar"; $format_backup_cmd = "oar";}
-		if($_POST['format_backup'] == 'XML2'){$format_backup = "xml2"; $format_backup_cmd = "xml2";}
 		//*********************************
 		// === Commande BACKUP ===
 		//*********************************
-		if($_POST['cmd'] == 'Backup Sim')
+		if($_POST['cmd'] == 'Backup Terrain'){$commande=$pre_cmd.'change region '.$_POST['name_sim'].';'.$pre_cmd.' terrain save BackupMap_'.$_POST['name_sim'].'.raw';
+		echo '<center><b> ==>> Fichier en cours de creation  ou cree  !!  Consultez le log !! <<== </b></center><BR>';
+		}
+		//*********************************
+		// === Commande ELEVATE ===
+		//*********************************
+		if($_POST['cmd'] == 'Modifier Hauteur du Terrain')
 		{
-			$today = mktime(0, 0, 0, date("m"), date("d"), date("y"));$commande = $pre_cmd.'change region '.$_POST['name_sim'].';'.$pre_cmd.'save '.$format_backup.' Backup_'.$_POST['name_sim'].'_'.date("dmY", $today) .'.'.$format_backup;
-			echo '<center><b> ==>> Fichier en cours de creation  ou cree  !!  Consultez le log !! <<== </b></center><BR>';
+		echo $_POST['hauteur'];
+			$commande = $commande=$pre_cmd.'change region '.$_POST['name_sim'].';'.$pre_cmd.' terrain elevate '.$_POST['hauteur'];
 		}
 
 //**************************************************************************
@@ -91,9 +96,14 @@ if($_POST['cmd'])
 //  Affichage page principale
 //******************************************************
 
-	//$tableauIni = parse_ini_file(INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Region.ini", true);
-	// *** Lecture Fichier Region.ini ***
+// *** Lecture Fichier Region.ini ***
+//	$filename1 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Region.ini";	// *** V 0.6.9 ***
 	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Regions.ini";	// *** V 0.7.1 ***
+	if (file_exists($filename1)) 
+		{//echo "Le fichier $filename1 existe.<br>";
+		$filename = $filename1 ;
+		}else {//echo "Le fichier $filename1 n'existe pas.<br>";
+		}
 	if (file_exists($filename2)) 
 		{//echo "Le fichier $filename2 existe.<br>";
 		$filename = $filename2 ;
@@ -102,8 +112,15 @@ if($_POST['cmd'])
 	$tableauIni = parse_ini_file($filename, true);
 	if($tableauIni == FALSE){echo 'prb lecture ini $filename<br>';}
 	
-	// *** Lecture Fichier OpenSimDefaults ***
+	
+// *** Lecture Fichier OpenSimDefaults.ini ***
+//	$filename1 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.ini";				//*** V 0.6.9
 	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini";		//*** V 0.7.1
+	if (file_exists($filename1)) 
+		{//echo "Le fichier $filename1 existe.<br>";
+		$filename = $filename1 ;
+		}else {//echo "Le fichier $filename1 n'existe pas.<br>";
+		}
 	if (file_exists($filename2)) 
 		{//echo "Le fichier $filename2 existe.<br>";
 		$filename = $filename2 ;
@@ -111,7 +128,7 @@ if($_POST['cmd'])
 		}
 
 // **** Recuperation du port http du serveur ******		
-	if (!$fp = fopen($filename,"r")) 
+if (!$fp = fopen($filename,"r")) 
 	{echo "Echec de l'ouverture du fichier $filename";}		
 	$tabfich=file($filename); 
 	for( $i = 1 ; $i < count($tabfich) ; $i++ )
@@ -126,21 +143,34 @@ if($_POST['cmd'])
 		}
 	}
 	fclose($fp);
-	
+	$i=0;
+//
 	echo 'Nb regions connectes: '.count($tableauIni).'<HR>';
-	echo '<center><table width="50%" BORDER=1>';
+	
+	echo '<center><table width="80%" BORDER=1>';
 	while (list($key, $val) = each($tableauIni))
 	{//echo '<tr><td>'.$key.'</td><td>'.$tableauIni[$key]['RegionUUID'].'</td><td>'.$tableauIni[$key]['InternalAddress'].'</td><td>'.$tableauIni[$key]['InternalPort'].'</td><td><img src="'.$ImgMap.'" width=30 height=30></td></tr>';
-		//****************** Lien vers la map ******************
+		//****************** Lien vers la map 2 choix ***************************
+		//	$ImgMap = "http://87.98.161.41:9000/index.php?method=regionImage24d1809db4e94993aa2b878d6df32426";
 		$ImgMap = "http://".$hostnameSSH.":".trim($srvOS)."/index.php?method=regionImage".str_replace("-","",$tableauIni[$key]['RegionUUID']);
 		//******************************************************
-		echo '<tr"><td align=center><center><b><u>'.$key.'</u></b></center><br><img src="'.$ImgMap.'" width=90 height=90 BORDER=1></td>';
+		echo '<tr">
+		<td align=center><center><b><u>'.$key.'</u></b></center><br><img src="'.$ImgMap.'" width=90 height=90 BORDER=1></td>';
+		//<td align=left><center><b><u>'.$key.'</u></b></center><br> IP Serveur: '.$tableauIni[$key]['InternalAddress'].'<br> Port Serveur: 9000 <br> Port Sim: '.$tableauIni[$key]['InternalPort'].'<br></td>
 		echo '<td align=center>
-		<FORM METHOD=POST ACTION=""><u>Sauvegarde au format OAR.</u><br><INPUT TYPE="submit" VALUE="Backup Sim" NAME="cmd" '.$btnN2.'><INPUT TYPE="hidden" NAME="format_backup" VALUE="OAR" ><INPUT TYPE="hidden" VALUE="'.$key.'" NAME="name_sim"></FORM>
-		<FORM METHOD=POST ACTION=""><u>Sauvegarde au format XML2.</u><br><INPUT TYPE="submit" VALUE="Backup Sim" NAME="cmd" '.$btnN2.'><INPUT TYPE="hidden" NAME="format_backup" VALUE="XML2" ><INPUT TYPE="hidden" VALUE="'.$key.'" NAME="name_sim"></FORM>
-		</td></tr>';
+		<FORM METHOD=POST ACTION="">Sauvegarde au format RAW.<br><INPUT TYPE="submit" VALUE="Backup Terrain" NAME="cmd" '.$btnN2.'><INPUT TYPE="hidden" VALUE="'.$key.'" NAME="name_sim"></FORM>
+		</td>
+		<td align=center>
+			<FORM METHOD=POST ACTION="">Hauteur de la map.(ex: -3 soit -3m, ex: 2 soit +2m)<br>
+			<INPUT TYPE="text" NAME="hauteur">
+			<INPUT TYPE="submit" VALUE="Modifier Hauteur du Terrain" NAME="cmd" '.$btnN3.'>
+			<INPUT TYPE="hidden" VALUE="'.$key.'" NAME="name_sim">
+			</FORM>
+		</td>
+		</tr>';
 	}
-	echo '</table><center><hr>';
-//******************************************************				
+	echo '</table></center><hr>';
+
+//******************************************************	
 }else{header('Location: index.php');   }
 ?>

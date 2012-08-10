@@ -1,6 +1,6 @@
 <meta http-equiv="refresh" content="5; url="#" />
 <?php 
-include 'variables.php';
+include 'config/variables.php';
 
 if (session_is_registered("authentification")){ // v&eacute;rification sur la session authentification 
 	echo '<HR>';

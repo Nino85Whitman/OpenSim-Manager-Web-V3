@@ -1,74 +1,147 @@
-<?php
-include 'variables.php';
+<?php 
+include 'config/variables.php';
 
-if (session_is_registered("authentification")){ // v&eacute;rification sur la session authentification 
+if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
+	if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<HR>';
-	$ligne1 = '<B>Gestion des fichiers sauvegardes du Serveur.</B>';
-	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.$_SESSION['opensim_select'].' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';
+	$ligne1 = '<B>Gestion du Transfert des sauvegardes pour les moteurs Opensim.</B>';
+	$ligne2 = '<br>>>> Destination: <b>'.INI_Conf_Moteur($_SESSION['opensim_select'],"address").'</b> <<<';
 	echo '<div class="block" id="clean-gray"><button><CENTER>'.$ligne1.'<br>'.$ligne2.'</CENTER></button></div>';
-	echo '<hr>';
-	//*****************************************************
-	// Si NIV 1 - Verification Moteur Autorisé ************
-	if($_SESSION['osAutorise'] != '')
-	{
-	$osAutorise = explode(";", $_SESSION['osAutorise']);
-	//echo count($osAutorise);
-	//echo $_SESSION['osAutorise'];
-		for($i=0;$i < count($osAutorise);$i++)
-		{	if(INI_Conf_Moteur($_SESSION['opensim_select'],"osAutorise") == $osAutorise[$i]){$moteursOK="OK";}    } 
-	}
-	//*****************************************************
+	//echo '<hr>';
 	//******************************************************
 	$btnN1 = "disabled"; $btnN2 = "disabled"; $btnN3 = "disabled";
 	if( $_SESSION['privilege']==4){$btnN1="";$btnN2="";$btnN3="";}		//  Niv 4	
 	if( $_SESSION['privilege']==3){$btnN1="";$btnN2="";$btnN3="";}		//  Niv 3
 	if( $_SESSION['privilege']==2){$btnN1="";$btnN2="";}				//	Niv 2
-	if($moteursOK == "OK"){if( $_SESSION['privilege']==1){$btnN1="";$btnN2="";$btnN3="";}}		//	Niv 1 + SECURITE MOTEUR
-	//******************************************************//******************************************************
-	
-/* racine */
-$cheminPhysique = INI_Conf_Moteur($_SESSION['opensim_select'],"address");
-$Address = $hostnameSSH;
+	if( $_SESSION['privilege']==1){$btnN1="";}							//	Niv 1
+	//******************************************************	
+//*******************************************************************	
+//*****************************************************************
 
-//******************************************************
-// CONSTRUCTION de la commande pour ENVOI sur la console via  SSH
-//******************************************************
-// exemple "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";chmod 777 OpenSim.log;rm OpenSim.log";
-if($_GET['f']){  $commande = $cmd_SYS_Delete_file.$_GET['f'].";rm ".$_GET['f'];}	 
 
+if($_POST['cmd'])
+{
+	// *** Affichage mode debug ***
+	echo $_POST['cmd'].'<br>';
+		
+	if($_POST['cmd'] == 'Archiver Moteur')
+	{
+		echo $_POST['name_sim'].'<br>';
+		extract($_POST);
+		echo "trouvé : ".count($matrice).'<br>';
+		
+		for ($i = 0; $i < count($_POST["matrice"]); $i++)
+		echo $_POST["matrice"][$i].'<br>';
+		
+	//	$commande = 'cd /var/www/OSMW;while read line; do tar -P -c -T - -f '.INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_sim'].'_archive_confOS.tar.gz; done < liste_fichiers.txt';
+	}	
+
+}
+
+if($_GET['g']){  $commande = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";rm ".$_GET['g'];}
 //**************************************************************************
+
+
 // Envoi de la commande par ssh  *******************************************
 //**************************************************************************
-	if($commande <> '')
-	{
-		if (!function_exists("ssh2_connect")) die(" function ssh2_connect doesn't exist");
-		// log in at server1.example.com on port 22
-		if(!($con = ssh2_connect($hostnameSSH, 22))){
-			echo " fail: unable to establish connection\n";
-		} else 
-		{// try to authenticate with username root, password secretpassword
-			if(!ssh2_auth_password($con,$usernameSSH,$passwordSSH)) {
-				echo "fail: unable to authenticate\n";
+if($commande <> '')
+{
+	if (!function_exists("ssh2_connect")) die(" function ssh2_connect doesn't exist");
+	// log in at server1.example.com on port 22
+	if(!($con = ssh2_connect($hostnameSSH, 22))){
+		echo " fail: unable to establish connection\n";
+	} else 
+	{// try to authenticate with username root, password secretpassword
+		if(!ssh2_auth_password($con,$usernameSSH,$passwordSSH)) {
+			echo "fail: unable to authenticate\n";
+		} else {
+		//echo " ok: logged in...\n";
+			if (!($stream = ssh2_exec($con, $commande ))) {
+				echo " fail: unable to execute command\n";
 			} else {
-			//echo " ok: logged in...\n";
-				if (!($stream = ssh2_exec($con, $commande ))) {
-					echo " fail: unable to execute command\n";
-				} else {
-					// collect returning data from command
-					stream_set_blocking($stream, true);	$data = "";
-					while ($buf = fread($stream,4096)) 
-					{
-					$data .= $buf."\n";}
-					//echo $data;					
-					fclose($stream);
-				}
+				// collect returning data from command
+				stream_set_blocking($stream, true);	$data = "";
+				while ($buf = fread($stream,4096)) 
+				{
+				$data .= $buf."\n";}
+				//echo $data;					
+				fclose($stream);
 			}
-		}	
+		}
+	}	
 
+}
+//******************************************************
+
+//******************************************************
+// Debut Affichage page principale
+//******************************************************
+
+	echo'<hr>';
+	//*************** Formulaire de choix du moteur a selectionné *****************
+		// on se connecte à MySQL
+	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
+	mysql_select_db($database,$db);
+	$sql = 'SELECT * FROM moteurs';
+	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+	echo '<CENTER><FORM METHOD=POST ACTION="">
+		<select name="OSSelect">';
+	while($data = mysql_fetch_assoc($req))
+		{$sel="";
+		 if($data['id_os'] == $_SESSION['opensim_select']){$sel="selected";}
+			echo '<option value="'.$data['id_os'].'" '.$sel.'>'.$data['name'].' - '.$data['version'].'</option>';
+		}
+	mysql_close();	
+	echo'</select><INPUT TYPE="submit" VALUE="Choisir" ></FORM></CENTER><hr>';
+	//**************************************************************************
+	
+	
+		//**************************************************************************	
+	// *** Lecture Fichier Region.ini ***
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Regions.ini";	// *** V 0.7.1 ***
+	if (file_exists($filename2)) 
+		{//echo "Le fichier $filename2 existe.<br>";
+		$filename = $filename2 ;
+		}else {//echo "Le fichier $filename2 n'existe pas.<br>";
+		}
+	$tableauIni = parse_ini_file($filename, true);
+	if($tableauIni == FALSE){echo 'prb lecture ini $filename<br>';}
+	
+	// *** Lecture Fichier OpenSimDefaults ***
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini";		//*** V 0.7.1
+	if (file_exists($filename2)) 
+		{//echo "Le fichier $filename2 existe.<br>";
+		$filename = $filename2 ;
+		}else {//echo "Le fichier $filename2 n'existe pas.<br>";
+		}
+
+// **** Recuperation du port http du serveur ******		
+	if (!$fp = fopen($filename,"r")) 
+	{echo "Echec de l'ouverture du fichier $filename";}		
+	$tabfich=file($filename); 
+	for( $i = 1 ; $i < count($tabfich) ; $i++ )
+	{
+	//echo $tabfich[$i]."</br>";
+	$porthttp = strstr($tabfich[$i],"http_listener_port");
+		if($porthttp)
+		{
+			$posEgal = strpos($porthttp,'=');
+			$longueur = strlen($porthttp);
+			$srvOS = substr($porthttp, $posEgal + 1);
+		}
 	}
-
-
-/* infos à extraire */
+	fclose($fp);
+		
+//******************************************************
+//  Contenu Affichage page principale
+//******************************************************	
+			
+/* racine */
+$cheminPhysique = INI_Conf_Moteur($_SESSION['opensim_select'],"address");
+$Address = $hostnameSSH;		
+		
+		
+		/* infos à extraire */
 function addScheme($entry,$base,$type) {
   $tab['name'] = $entry;
   $tab['type'] = filetype($base."/".$entry);
@@ -140,14 +213,14 @@ function list_file($cur) {
     echo "<tr style=\"font-size:8pt;font-family:arial;\">
     <th>".(($order=='name')?(($asc=='a')?'/\\ ':'\\/ '):'')."Nom</th><td>&nbsp;</td>
     <th>".(($order=='size')?(($asc=='a')?'/\\ ':'\\/ '):'')."Taille</th><td>&nbsp;</td>
-    <th>".(($order=='date')?(($asc=='a')?'/\\ ':'\\/ '):'')."Derniere modification</th><td>&nbsp;</td>
-    <th>".(($order=='ext')?(($asc=='a')?'/\\ ':'\\/ '):'')."Extention</th><td>&nbsp;</td></tr>";
+	<th>".(($order=='date')?(($asc=='a')?'/\\ ':'\\/ '):'')."Derniere modification</th><td>&nbsp;</td>
+	</tr>";
 //*********************************************************************************************************
 //*********************************************************************************************************
     foreach($tab_file as $elem) 
 	{
 	// http://www.yoursite.com/force-download.php?file=filepath
-	global  $cheminPhysique, $cheminAppli , $Address, $moteursOK;
+	global  $cheminPhysique, $cheminAppli , $Address, $moteursOK, $matrice;
 	$cheminAppli = INI_Conf($_SESSION['opensim_select'],"cheminAppli");
 	$cheminPhysique = INI_Conf_Moteur($_SESSION['opensim_select'],"address");
 	$Address = INI_Conf_Moteur($_SESSION['opensim_select'],"cheminAppli");
@@ -156,17 +229,11 @@ function list_file($cur) {
 	if($moteursOK == "OK"){$cheminWeb = "force-download.php?file=".$cheminPhysique.$elem['name'];}
 		if(assocExt($elem['ext']) <> 'inconnu')
 		{
-		  echo "<tr>";
-		  echo "<td><img src='images/hippo.gif' />&nbsp;<a href = '".$cheminWeb."'>".$elem['name']."</a></td>
-		  <td>&nbsp;&nbsp;&nbsp;</td>";
-		  echo "<td align=\"right\">".formatSize($elem['size'])."</td>
-		  <td>&nbsp;&nbsp;&nbsp;</td>
-		  <td>".date("d/m/Y H:i:s", $elem['date'])."</td><td>&nbsp;&nbsp;</td>
-		  <td>".assocExt($elem['ext'])."</td>
-		  <td>&nbsp;&nbsp;&nbsp;</td>
-		  <td>";
-		  if( $_SESSION['privilege']>=3 xor $moteursOK == "OK"){echo "<a href = '?f=".$elem['name']."'>Supprimer</a>";}
-		  echo " </td></tr>\n";
+		  echo "<tr>
+		  <td><a href = '".$cheminWeb."'>".$elem['name']."</a></td><td>&nbsp;</td>
+		  <td align=\"right\">".formatSize($elem['size'])."</td><td>&nbsp;</td>
+		  <td>".date("d/m/Y H:i:s", $elem['date'])."</td><td>&nbsp;</td>
+		  <td><input type='checkbox' name='matrice[]' value='".$cheminPhysique.$elem['name']."'></td><td>&nbsp;</td></tr>";
 		}
     }
     echo "</table>";
@@ -295,13 +362,19 @@ function cmp_ext($a,$b) {
     }
 }
 
-
+echo '<FORM METHOD=POST ACTION="">';
 echo '<table border="1" cellspacing="0" cellpadding="10" bordercolor="gray"><tr valign="top">';
 //<!-- liste des fichiers -->
-
 /* repertoire initial à lister */
 if(!$dir) {  $dir = INI_Conf_Moteur($_SESSION['opensim_select'],"address");} 
 list_file(rawurldecode($dir)); 
 echo '</td></tr></table><HR>';
 
+echo '<INPUT TYPE="submit" VALUE="Archiver Moteur" NAME="cmd" ><INPUT TYPE="hidden" VALUE="'.$_SESSION['opensim_select'].'" NAME="name_sim">';
+echo '</FORM>';	
+//***********************************************************************************************	
+
+//******************************************************		
+mysql_close();			
 }else{header('Location: index.php');   }
+?>

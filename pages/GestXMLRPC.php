@@ -1,6 +1,6 @@
 <?php 
-include 'variables.php';
-include('XMLRPC.php');
+include 'config/variables.php';
+include 'config/XMLRPC.php';
 
 if (session_is_registered("authentification"))
 { // v&eacute;rification sur la session authentification 

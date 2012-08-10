@@ -1,5 +1,5 @@
 <?php 
-include 'variables.php';
+include 'config/variables.php';
 
 
 if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
@@ -30,7 +30,7 @@ if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // 
 			$data = mysql_fetch_assoc($req);
 			$simul = $data['id_os'];
 	
-	 	$imglogo = 'http://'.$hostnameSSH.$chemin.'logoserver.png';		// Lien logo serveur
+	 	$imglogo = 'http://'.$hostnameSSH.$chemin.'images/logoserver.png';		// Lien logo serveur
 	
 	
 //******************************************************
@@ -116,7 +116,7 @@ if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // 
 		{
 		//*** Chemin de destination du fichier envoyé ***
 
-		$chemin_destination = "/var/www".$chemin."logoserver.png";
+		$chemin_destination = "/var/www".$chemin."images/logoserver.png";
 		//*********************************************
 			if(!empty($_FILES['nom_du_fichier']['tmp_name']) AND is_uploaded_file($_FILES['nom_du_fichier']['tmp_name']))
 			{
