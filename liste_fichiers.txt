@@ -1,0 +1,10 @@
+
+/home/fgagod/Opensim-0.7.1-Sim1/ScreenSend
+/home/fgagod/Opensim-0.7.1-Sim1/RunOpensim.sh
+/home/fgagod/Opensim-0.7.1-Sim1/Regions/Regions.ini
+/home/fgagod/Opensim-0.7.1-Sim1/OpenSimDefaults.ini
+/home/fgagod/Opensim-0.7.1-Sim1/config-include/FlotsamCache.ini
+/home/fgagod/Opensim-0.7.1-Sim1/config-include/GridCommon.ini
+/home/fgagod/Opensim-0.7.1-Sim1/startuplogo.txt
+/home/fgagod/Opensim-0.7.1-Sim1/startup_commands.txt
+/home/fgagod/Opensim-0.7.1-Sim1/shutdown_commands.txt

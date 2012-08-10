@@ -1,18 +1,13 @@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 Configuration requise pour OSWebManager:
-	-- SSH
-	-- Mono
-	-- Apache
-	-- Mysql
-	-- PHPMyAdmin
-	-- Lib php SSH2
+	-- SSH / Mono / Apache / Mysql / PHPMyAdmin* / Lib php SSH2  (*pas nécessaire si autre moyen)
 Fonctionnement:
 	-- OSMW envoi des commandes au simulateur via le fichier "Screensend" dans un screen Unix
-	-- Le simulateur est lancé par le fichier batch "RunOpensim.sh" qui contient le nom du screen 
-	-- Ces fichiers doivent avoir les droits 755
-	-- Les fichiers doivent etre installés dans chaque simulateurs (moteurs)
+	-- Le simulateur est lancé par le fichier batch "RunOpensim.sh" qui contient le nom du screen (moteur)
+	-- Certains fichiers doivent avoir les droits 777 pour pouvoir etre modifier par OSMW
+	-- Les fichiers fournis doivent etre installés dans chaque simulateurs (moteurs)
 	-- ATTENTION aux droits d'accés aux fichiers 
-		--> Régions.ini (droits écriture) et OpensimDefaults.ini qui doivent etre accessible
+		--> Régions.ini (droits écriture) / OpensimDefaults.ini , etc.. qui doivent etre accessible
 Gestion des Utilisateurs:
 	=> 5 Niveaux d'accés sont autorisés
 	-- Administrateurs 
@@ -24,7 +19,14 @@ Gestion des Utilisateurs:
 ******************************************
 ********* Suivi de versions **********
 ******************************************
-*** V 3.0 ***
+*** V 4 Final ***
+-- Systeme d'installation intégrés
+-------------------------------------------------------
+*** V 3.2 Final ***
+-- Gestion des sauvegardes
+-- Detection des fichiers de config moteurs
+-------------------------------------------------------
+*** V 3.0 *** MISE A JOUR MAJEUR ***
 -- OSMW à sa propre base de donnée *** Nouveauté
 -- Les Fichiers de config , conf moteurs et users sont en BDD ( prb de sécurité !)
 -- Compte Utilisateur filtré au viveau des moteurs (choix du moteur) *** Nouveauté

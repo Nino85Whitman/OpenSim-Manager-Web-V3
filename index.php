@@ -79,7 +79,7 @@ if (session_is_registered("authentification")){ // vérification sur la session a
 	
 	// ********** Page appelé pour le telechargement de fichier
 	if($_GET['f']){include('GestDirectory.php');exit;}	 
-	
+	if($_GET['g']){include('GestBackup.php');echo $PIED_DE_PAGE;exit;}	 
 	// REDIRECTION DES PAGES *************************************************************
 	if($_POST['a'] or $_GET['a']){
 		if($_POST['a']){$vers = $_POST['a'];}
@@ -176,7 +176,7 @@ if (session_is_registered("authentification")){ // vérification sur la session a
 		echo '<div class="block" id="pale-blue"><a href="?a=8"><button>Gestion du Serveur.</button></a></div>';
 		echo '<div class="block" id="pale-blue"><a href="?a=17"><button>Gestion des Moteurs.</button></a></div>';
 		echo '<div class="block" id="pale-blue"><a href="?a=6"><button>Gestion des Regions.</button></a></div>';	
-		echo '<div class="block" id="pale-blue"><a href="?a=5"><button>Configuration des INI Opensim.</button></a></div>';
+		echo '<div class="block" id="pale-blue"><a href="?a=5"><button>Editer la configuration Opensim.</button></a></div>';
 		echo '<div class="block" id="pale-blue"><a href="?a=18"><button>Configuration de OpenSim Manager Web.</button></a></div>';	
 		echo '<div class="block" id="pale-blue"><a href="?a=15"><button>Gestion des Utilisateurs.</button></a></div>';
 		echo '<div class="block" id="pale-blue"><a href="?a=12"><button>Connectivité du Serveur OSMW.</button></a></div>';

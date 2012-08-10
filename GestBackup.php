@@ -2,11 +2,12 @@
 include 'variables.php';
 
 if (session_is_registered("authentification") && $_SESSION['privilege']==4){ // v&eacute;rification sur la session authentification 
+	if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<HR>';
-	$ligne1 = '<B>Gestion de la configuration de OpenSim Manager Web.</B>';
-	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.$_SESSION['opensim_select'].' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';
+	$ligne1 = '<B>Gestion des sauvegardes pour les moteurs Opensim et de OpenSim Manager Web.</B>';
+	$ligne2 = '<br>>>> Destination: <b>'.INI_Conf_Moteur($_SESSION['opensim_select'],"address").'</b> <<<';
 	echo '<div class="block" id="clean-gray"><button><CENTER>'.$ligne1.'<br>'.$ligne2.'</CENTER></button></div>';
-	echo '<hr>';
+	//echo '<hr>';
 	//******************************************************
 	$btnN1 = "disabled"; $btnN2 = "disabled"; $btnN3 = "disabled";
 	if( $_SESSION['privilege']==4){$btnN1="";$btnN2="";$btnN3="";}		//  Niv 4	
@@ -15,49 +16,430 @@ if (session_is_registered("authentification") && $_SESSION['privilege']==4){ // 
 	if( $_SESSION['privilege']==1){$btnN1="";}							//	Niv 1
 	//******************************************************	
 //*******************************************************************	
-
 //*****************************************************************
+
+
 if($_POST['cmd'])
 {
 	// *** Affichage mode debug ***
-
 	echo $_POST['cmd'].'<br>';
-
-		if($_POST['cmd'] == 'Ajouter')
-		{
-			
-		} 
-		if($_POST['cmd'] == 'Enregistrer')
-		{	
-			
-		} 
-		if($_POST['cmd'] == 'Modifier')
-		{
 		
-		} 
-		if($_POST['cmd'] == 'Supprimer')
-		{			
+	if($_POST['cmd'] == 'Sauvegarde fichiers opensim')
+	{
+		echo $_POST['name_sim'];
+		$commande = 'cd /var/www/OSMW;while read line; do tar -P -c -T - -f '.INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_sim'].'_archive_confOS.tar.gz; done < liste_fichiers.txt';
+	}	
+	if($_POST['cmd'] == 'Archiver Moteur')
+	{
+		echo $_POST['name_sim'];
+	//	$commande = 'cd /var/www/OSMW;while read line; do tar -P -c -T - -f '.INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_sim'].'_archive_confOS.tar.gz; done < liste_fichiers.txt';
+	}
+}
 
-		} 
+if($_GET['g']){  $commande = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";rm ".$_GET['g'];}
+//**************************************************************************
+
+
+// Envoi de la commande par ssh  *******************************************
+//**************************************************************************
+if($commande <> '')
+{
+	if (!function_exists("ssh2_connect")) die(" function ssh2_connect doesn't exist");
+	// log in at server1.example.com on port 22
+	if(!($con = ssh2_connect($hostnameSSH, 22))){
+		echo " fail: unable to establish connection\n";
+	} else 
+	{// try to authenticate with username root, password secretpassword
+		if(!ssh2_auth_password($con,$usernameSSH,$passwordSSH)) {
+			echo "fail: unable to authenticate\n";
+		} else {
+		//echo " ok: logged in...\n";
+			if (!($stream = ssh2_exec($con, $commande ))) {
+				echo " fail: unable to execute command\n";
+			} else {
+				// collect returning data from command
+				stream_set_blocking($stream, true);	$data = "";
+				while ($buf = fread($stream,4096)) 
+				{
+				$data .= $buf."\n";}
+				//echo $data;					
+				fclose($stream);
+			}
+		}
+	}	
+
 }
 //******************************************************
 
-echo 'Bienvenue, ici tous les parametres de sauvegardes.<br>';
+//******************************************************
+// Debut Affichage page principale
+//******************************************************
 
-echo '
-<li>Definir Profils:</li>
-- Moteurs					<br>
-- Sims / OAR /IAR ???		<br>	
-- Base OS ???				<br>
-<li>Definir Archivages:</li>
-- Plannification d\'un profil<br>
-<li>Definir Media:</li>
+	echo'<hr>';
+	//*************** Formulaire de choix du moteur a selectionné *****************
+		// on se connecte à MySQL
+	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
+	mysql_select_db($database,$db);
+	$sql = 'SELECT * FROM moteurs';
+	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+	echo '<CENTER><FORM METHOD=POST ACTION="">
+		<select name="OSSelect">';
+	while($data = mysql_fetch_assoc($req))
+		{$sel="";
+		 if($data['id_os'] == $_SESSION['opensim_select']){$sel="selected";}
+			echo '<option value="'.$data['id_os'].'" '.$sel.'>'.$data['name'].' - '.$data['version'].'</option>';
+		}
+	mysql_close();	
+	echo'</select><INPUT TYPE="submit" "VALUE="Choisir" ><INPUT TYPE="submit" VALUE="Archiver Moteur" NAME="cmd" ><INPUT TYPE="hidden" VALUE="'.$_SESSION['opensim_select'].'" NAME="name_sim"></FORM></CENTER><hr>';
+	//**************************************************************************
+	
+	
+		//**************************************************************************	
+	// *** Lecture Fichier Region.ini ***
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Regions.ini";	// *** V 0.7.1 ***
+	if (file_exists($filename2)) 
+		{//echo "Le fichier $filename2 existe.<br>";
+		$filename = $filename2 ;
+		}else {//echo "Le fichier $filename2 n'existe pas.<br>";
+		}
+	$tableauIni = parse_ini_file($filename, true);
+	if($tableauIni == FALSE){echo 'prb lecture ini $filename<br>';}
+	
+	// *** Lecture Fichier OpenSimDefaults ***
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini";		//*** V 0.7.1
+	if (file_exists($filename2)) 
+		{//echo "Le fichier $filename2 existe.<br>";
+		$filename = $filename2 ;
+		}else {//echo "Le fichier $filename2 n'existe pas.<br>";
+		}
+
+// **** Recuperation du port http du serveur ******		
+	if (!$fp = fopen($filename,"r")) 
+	{echo "Echec de l'ouverture du fichier $filename";}		
+	$tabfich=file($filename); 
+	for( $i = 1 ; $i < count($tabfich) ; $i++ )
+	{
+	//echo $tabfich[$i]."</br>";
+	$porthttp = strstr($tabfich[$i],"http_listener_port");
+		if($porthttp)
+		{
+			$posEgal = strpos($porthttp,'=');
+			$longueur = strlen($porthttp);
+			$srvOS = substr($porthttp, $posEgal + 1);
+		}
+	}
+	fclose($fp);
+		
+//******************************************************
+//  Contenu Affichage page principale
+//******************************************************	
+			
+/* racine */
+$cheminPhysique = INI_Conf_Moteur($_SESSION['opensim_select'],"address");
+$Address = $hostnameSSH;		
+		
+		
+		/* infos à extraire */
+function addScheme($entry,$base,$type) {
+  $tab['name'] = $entry;
+  $tab['type'] = filetype($base."/".$entry);
+  $tab['date'] = filemtime($base."/".$entry);
+  $tab['size'] = filesize($base."/".$entry);
+  $tab['perms'] = fileperms($base."/".$entry);
+  $tab['access'] = fileatime($base."/".$entry);
+  $t = explode(".", $entry);
+  $tab['ext'] = $t[count($t)-1];
+  return $tab;
+}
+/* liste des dossiers */
+function list_dir($base, $cur, $level=0) {
+  global $PHP_SELF, $order, $asc;
+  if ($dir = opendir($base)) {
+    $tab = array();
+    while($entry = readdir($dir)) {
+      if(is_dir($base."/".$entry) && !in_array($entry, array(".",".."))) {
+        $tab[] = addScheme($entry, $base, 'dir');
+      }
+    }
+    /* tri */
+    usort($tab,"cmp_name");
+    foreach($tab as $elem) {
+      $entry = $elem['name'];
+      /* chemin relatif à la racine */
+      $file = $base."/".$entry;
+     /* marge gauche */
+      for($i=1; $i<=(4*$level); $i++) {
+        echo "&nbsp;";
+      }
+      /* l'entree est-elle le dossier courant */
+      if($file == $cur) {
+        echo "<img src='images/hippo.gif' />&nbsp;$entry<br />\n";
+      } else {
+        echo "<img src='images/hippo.gif' />&nbsp;<a href=\"$PHP_SELF?dir=". rawurlencode($file) ."&order=$order&asc=$asc\">$entry</a><br />\n";
+      }
+      /* l'entree est-elle dans la branche dont le dossier courant est la feuille */
+      if(ereg($file."/",$cur."/")) {
+        list_dir($file, $cur, $level+1);
+      }
+    }
+    closedir($dir);
+  }
+}
+/* liste des fichiers */
+function list_file($cur) {
+  global $PHP_SELF, $order, $asc, $order0;
+  if ($dir = opendir($cur)) {
+    /* tableaux */
+    $tab_dir = array();
+    $tab_file = array();
+    /* extraction */
+    while($file = readdir($dir)) {
+      if(is_dir($cur."/".$file)) {
+        if(!in_array($file, array(".",".."))) {
+          $tab_dir[] = addScheme($file, $cur, 'dir');
+        }
+      } else {
+          $tab_file[] = addScheme($file, $cur, 'file');
+      }
+    }
+    /* tri */
+    usort($tab_dir,"cmp_".$order);
+    usort($tab_file,"cmp_".$order);
+    /* affichage */
+
+    echo "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
+    echo "<tr style=\"font-size:8pt;font-family:arial;\">
+    <th>".(($order=='name')?(($asc=='a')?'/\\ ':'\\/ '):'')."Nom</th><td>&nbsp;</td>
+    <th>".(($order=='size')?(($asc=='a')?'/\\ ':'\\/ '):'')."Taille</th><td>&nbsp;</td>
+	<th>".(($order=='date')?(($asc=='a')?'/\\ ':'\\/ '):'')."Derniere modification</th><td>&nbsp;</td>
+	</tr>";
+//*********************************************************************************************************
+//*********************************************************************************************************
+    foreach($tab_file as $elem) 
+	{
+	// http://www.yoursite.com/force-download.php?file=filepath
+	global  $cheminPhysique, $cheminAppli , $Address, $moteursOK;
+	$cheminAppli = INI_Conf($_SESSION['opensim_select'],"cheminAppli");
+	$cheminPhysique = INI_Conf_Moteur($_SESSION['opensim_select'],"address");
+	$Address = INI_Conf_Moteur($_SESSION['opensim_select'],"cheminAppli");
+	
+	if($_SESSION['privilege']==1){$cheminWeb ="#";}else{$cheminWeb = "force-download.php?file=".$cheminPhysique.$elem['name'];}
+	if($moteursOK == "OK"){$cheminWeb = "force-download.php?file=".$cheminPhysique.$elem['name'];}
+		if(assocExt($elem['ext']) <> 'inconnu')
+		{
+		  echo "<tr>
+		  <td><a href = '".$cheminWeb."'>".$elem['name']."</a></td><td>&nbsp;</td>
+		  <td align=\"right\">".formatSize($elem['size'])."</td><td>&nbsp;</td>
+		  <td>".date("d/m/Y H:i:s", $elem['date'])."</td><td>&nbsp;</td></tr>";
+		}
+    }
+    echo "</table>";
+    closedir($dir);
+  }
+}
+
+//*********************************************************************************************************
+//*********************************************************************************************************
+
+/* formatage de la taille */
+function formatSize($s) {
+  /* unites */
+  $u = array('octets','Ko','Mo','Go','To');
+  /* compteur de passages dans la boucle */
+  $i = 0;
+  /* nombre à afficher */
+  $m = 0;
+  /* division par 1024 */
+  while($s >= 1) {
+    $m = $s;
+    $s /= 1024;
+    $i++;
+  }
+  if(!$i) $i=1;
+  $d = explode(".",$m);
+  /* s'il y a des decimales */
+  if($d[0] != $m) {
+    $m = number_format($m, 2, ",", " ");
+  }
+  return $m." ".$u[$i-1];
+}
+/* formatage du type */
+function assocType($type) {
+  /* tableau de conversion */
+  $t = array(
+    'fifo' => "file",
+    'char' => "fichier special en mode caractere",
+    'dir' => "dossier",
+    'block' => "fichier special en mode bloc",
+    'link' => "lien symbolique",
+    'file' => "fichier",
+    'unknown' => "inconnu"
+  );
+  return $t[$type];
+}
+/* description de l'extention */
+function assocExt($ext) {
+  $e = array(
+    '' => "inconnu",
+	'gz' => "Sauvegarde OSMW"
+  );
+  if(in_array($ext, array_keys($e))) {
+    return $e[$ext];
+  } else {
+    return $e[''];
+  }
+}
+function cmp_name($a,$b) {
+    global $asc;
+    if ($a['name'] == $b['name']) return 0;
+    if($asc == 'a') {
+        return ($a['name'] < $b['name']) ? -1 : 1;
+    } else {
+        return ($a['name'] > $b['name']) ? -1 : 1;
+    }
+}
+function cmp_size($a,$b) {
+    global $asc;
+    if ($a['size'] == $b['size']) return cmp_name($a,$b);
+    if($asc == 'a') {
+        return ($a['size'] < $b['size']) ? -1 : 1;
+    } else {
+        return ($a['size'] > $b['size']) ? -1 : 1;
+    }
+}
+function cmp_date($a,$b) {
+    global $asc;
+    if ($a['date'] == $b['date']) return cmp_name($a,$b);
+    if($asc == 'a') {
+        return ($a['date'] < $b['date']) ? -1 : 1;
+    } else {
+        return ($a['date'] > $b['date']) ? -1 : 1;
+    }
+}
+function cmp_access($a,$b) {
+    global $asc;
+    if ($a['access'] == $b['access']) return cmp_name($a,$b);
+    if($asc == 'a') {
+        return ($a['access'] < $b['access']) ? -1 : 1;
+    } else {
+        return ($a['access'] > $b['access']) ? -1 : 1;
+    }
+}
+function cmp_perms($a,$b) {
+    global $asc;
+    if ($a['perms'] == $b['perms']) return cmp_name($a,$b);
+    if($asc == 'a') {
+        return ($a['perms'] < $b['perms']) ? -1 : 1;
+    } else {
+        return ($a['perms'] > $b['perms']) ? -1 : 1;
+    }
+}
+function cmp_type($a,$b) {
+    global $asc;
+    if ($a['type'] == $b['type']) return cmp_name($a,$b);
+    if($asc == 'a') {
+        return ($a['type'] < $b['type']) ? -1 : 1;
+    } else {
+        return ($a['type'] > $b['type']) ? -1 : 1;
+    }
+}
+function cmp_ext($a,$b) {
+    global $asc;
+    if ($a['ext'] == $b['ext']) return cmp_name($a,$b);
+    if($asc == 'a') {
+        return ($a['ext'] < $b['ext']) ? -1 : 1;
+    } else {
+        return ($a['ext'] > $b['ext']) ? -1 : 1;
+    }
+}
 
 
+echo '<table border="1" cellspacing="0" cellpadding="10" bordercolor="gray"><tr valign="top">';
+//<!-- liste des fichiers -->
+/* repertoire initial à lister */
+if(!$dir) {  $dir = INI_Conf_Moteur($_SESSION['opensim_select'],"address");} 
+list_file(rawurldecode($dir)); 
+echo '</td></tr></table><HR>';
 
-';
+
+echo '<table border=0><tr>';
+//**************************************************************************	
+$i=0;
+	while (list($key, $val) = each($tableauIni))
+	{
+			if($i%3 <= 3){
+			echo '<td>';
+		$ImgMap = "http://".$hostnameSSH.":".trim($srvOS)."/index.php?method=regionImage".str_replace("-","",$tableauIni[$key]['RegionUUID']);
+		echo '<center><b><u>*** '.$key.' ***</u></b>  <img src="'.$ImgMap.'" width=45 height=45 BORDER=1></center>';
+		echo '<FORM METHOD=POST ACTION="">';
+		// *** Test des Fichiers suivants ***
+		$filename0a = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."ScreenSend";	
+		$filename0b = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."RunOpensim.sh";	
+		$filename1 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.ini";				
+		$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini";
+		$filename3 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."config-include/FlotsamCache.ini";	
+		$filename4 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."config-include/GridCommon.ini";
+		$filename5 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.log";
+		$filename6 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.32BitLaunch.log";
+		$filename7 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."startuplogo.txt";
+		$filename8 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."startup_commands.txt";
+		$filename9 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."shutdown_commands.txt";
+		//******************************************************
+	
+		//******************************************************
+		if (file_exists($filename0a))
+			{echo '<input type="checkbox" name="affichage" value="ScreenSend" checked disabled> Le fichier ScreenSend existe. <br>';}
+			else {echo "<B>Le fichier ScreenSend n'existe pas.</B><br>";}	
+		if (file_exists($filename0b))
+			{echo '<input type="checkbox" name="affichage" value="RunOpensim.sh" checked disabled> Le fichier RunOpensim.sh existe. <br>';}
+			else {echo "<B>Le fichier RunOpensim.sh n'existe pas.</B><br>";}
+		if (file_exists($filename1))
+			{echo '<input type="checkbox" name="affichage" value="OpenSim.ini" checked disabled> Le fichier OpenSim.ini existe. <br>';}
+			else {echo "<B>Le fichier OpenSim.ini n'existe pas.</B><br>";}
+		if (file_exists($filename2))
+			{echo '<input type="checkbox" name="affichage" value="OpenSimDefaults.ini" checked disabled> Le fichier OpenSimDefaults.ini existe. <br>';}
+			else {echo "<B>Le fichier OpenSimDefaults.ini n'existe pas.</B><br>";}
+		if (file_exists($filename3))
+			{echo '<input type="checkbox" name="affichage" value="FlotsamCache.ini" checked disabled> Le fichier FlotsamCache.ini existe. <br>';}
+			else {echo "<B>Le fichier FlotsamCache.ini n'existe pas.</B><br>";}
+		if (file_exists($filename4))
+			{echo '<input type="checkbox" name="affichage" value="GridCommon.ini" checked disabled> Le fichier GridCommon.ini existe. <br>';}
+			else {echo "<B>Le fichier GridCommon.ini n'existe pas.</B><br>";}
+		if (file_exists($filename5))
+			{echo '<input type="checkbox" name="affichage" value="OpenSim.log" disabled> Le fichier OpenSim.log existe. <br>';}
+			else {echo "<B>Le fichier OpenSim.log n'existe pas.</B><br>";}
+		if (file_exists($filename6))
+			{echo '<input type="checkbox" name="affichage" value="OpenSim.32BitLaunch.log" disabled> Le fichier OpenSim.32BitLaunch.log existe. <br>';}
+			else {echo "<B>Le fichier OpenSim.32BitLaunch.log n'existe pas.</B><br>";}
+		if (file_exists($filename7))
+			{echo '<input type="checkbox" name="affichage" value="startuplogo.txt" checked disabled> Le fichier startuplogo.txt existe. <br>';}
+			else {echo "<B>Le fichier startuplogo.txt n'existe pas.</B><br>";}
+		if (file_exists($filename8))
+			{echo '<input type="checkbox" name="affichage" value="startup_commands.txt" checked disabled> Le fichier startup_commands.txt existe. <br>';}
+			else {echo "<B>Le fichier startup_commands.txt n'existe pas.</B><br>";}
+		if (file_exists($filename9))
+			{echo '<input type="checkbox" name="affichage" value="shutdown_commands.txt" checked disabled> Le fichier shutdown_commands.txt existe. <br>';}
+			else {echo "<B>Le fichier shutdown_commands.txt n'existe pas.</B><br>";}		
+		//******************************************************		
+
+		//******************************************************
+		echo '<INPUT TYPE="submit" VALUE="Sauvegarde fichiers opensim" NAME="cmd" '.$btnN2.'>
+		<INPUT TYPE="hidden" NAME="format_backup" VALUE="OAR" >
+		<INPUT TYPE="hidden" VALUE="'.$key.'" NAME="name_sim">';	
+		//******************************************************	
+		echo '</FORM></td>';
+
+		if($i%3 == 2){echo '</tr><tr>';}
+		$i++;
+		}
+	}
+	//**************************************************************************	
+echo '</tr></table><HR>';
+
+
+	
 //***********************************************************************************************	
-	echo '<hr>';
+
 //******************************************************		
 mysql_close();			
 }else{header('Location: index.php');   }

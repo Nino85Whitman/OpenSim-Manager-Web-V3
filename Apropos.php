@@ -14,6 +14,7 @@ if (session_is_registered("authentification"))
 			<br><u>Contributeurs:</u><br><br>
 				Gill Beaumont<br>
 				Ryanna Ariantho<br>
+				<br>
 			
 			<br>Pour toutes informations, contacter moi ! <b><a href="mailto:contact@fgagod.net">contact@fgagod.net</a></b><br>
 			<hr>

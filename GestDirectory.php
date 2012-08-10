@@ -222,6 +222,7 @@ function assocExt($ext) {
 	'xml2' => "Archive OS XML2",
 	'jpg' => "Image JPG",
 	'bmp' => "Image BMP",
+	'gz' => "Backup OSMW",
 	'raw' => "Terrain OS"
   );
   if(in_array($ext, array_keys($e))) {
