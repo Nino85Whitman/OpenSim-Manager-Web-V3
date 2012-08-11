@@ -34,7 +34,7 @@ $cmd_SYS_Delete_file = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"addres
 $cmd_SYS_Delete_Xlog = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";chmod 777 XEngine.log;rm XEngine.log";
 //*************************************************************************************
 
-$MENU_LATTERALE = '<div id="menu"><ul>
+$MENU_LATTERALE = '<center><div id="menu"><ul>
 		<li><a href="./" title="Page d\'accueil"><span>Accueil</span></a></li>
 		<li><a href="?a=1" title="Gestion des sims (Messages, Start, Stop)"><span>Sims</span></a></li>
 		<li><a href="?a=2" title="Gestion des sauvegardes (OAR, XML2)"><span>Backup</span></a></li>
@@ -45,7 +45,7 @@ $MENU_LATTERALE = '<div id="menu"><ul>
 		<li><a href="?a=11" title="Affichage des sims presentes sur le moteur"><span>Carte</span></a></li>
 		<li><a href="?a=14" title="Qui a participe au projet OSMW"><span>A Propos</span></a></li>
 		<li><a href="?a=13" title="Une question, ici peut etre la reponse !"><span>Aide</span></a></li>
-	</ul></div>';
+	</ul></div></center>';
 
 $PIED_DE_PAGE = '<hr><center>'.INI_Conf($_SESSION['opensim_select'],"VersionOSMW").'</center>';
 ?>

@@ -19,11 +19,13 @@ Gestion des Utilisateurs:
 ******************************************
 ********* Suivi de versions **********
 ******************************************
-*** V 4 Final ***
+*** V 4 Final *** En cours
 -- Systeme d'installation intégrés
+-- ...
 -------------------------------------------------------
 *** V 3.2 Final ***
--- Gestion des sauvegardes
+-- Gestion des sauvegardes de la config des moteurs Opensim et pour chaque sim
+-- Transfert des fichiers de sauvagardes vers un serveur FTP exterieur
 -- Detection des fichiers de config moteurs
 -------------------------------------------------------
 *** V 3.0 *** MISE A JOUR MAJEUR ***

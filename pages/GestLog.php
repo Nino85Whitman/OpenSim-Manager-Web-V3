@@ -3,6 +3,7 @@
 include 'config/variables.php';
 
 if (session_is_registered("authentification")){ // v&eacute;rification sur la session authentification 
+if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<HR>';
 	$ligne1 = '<B>Gestion du Fichier Log.</B>';
 	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.$_SESSION['opensim_select'].' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';
@@ -74,7 +75,23 @@ if($commande <> ''){
 		}
 	}
 	}
-	
+		
+	//*************** Formulaire de choix du moteur a selectionné *****************
+		// on se connecte à MySQL
+	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
+	mysql_select_db($database,$db);
+	$sql = 'SELECT * FROM moteurs';
+	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+	echo '<CENTER><FORM METHOD=POST ACTION="">
+		<select name="OSSelect">';
+	while($data = mysql_fetch_assoc($req))
+		{$sel="";
+		 if($data['id_os'] == $_SESSION['opensim_select']){$sel="selected";}
+			echo '<option value="'.$data['id_os'].'" '.$sel.'>'.$data['name'].' - '.$data['version'].'</option>';
+		}
+	mysql_close();	
+	echo'</select><INPUT TYPE="submit" VALUE="Choisir" ></FORM></CENTER><hr>';
+	//**************************************************************************
 	//******************************************************
 	//********** Test du fichier log 32bit / 64bit
 	$fichierXLog = INI_Conf_Moteur($_SESSION['opensim_select'],"address").'XEngine.log';

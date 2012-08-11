@@ -106,64 +106,6 @@ function NbOpensim(){
 	$Version = $tab["compteur"];
 	return $Version;
 }
-
-// FONCTIONS NON UTILISE
 //*************************************************************************************
-function Creation_ConfigINI(){
- 
-$cheminComplet = $_SERVER['SCRIPT_FILENAME'];
-$chemin = explode("/", $cheminComplet);
-
-	$fp = fopen ("config.ini.php", "w+");  
-	fputs($fp,"[Parametre_OSMW]\r\n");
-	fputs($fp,";******** Repertoire ou est installe OpenSim Manager Web ************\r\n");
-	fputs($fp,"cheminAppli = /".$chemin[count($chemin)-2]."/\r\n");
-	fputs($fp,";******** Destinataire des messages provenant de OSMW ************\r\n");
-	fputs($fp,"destinataire = votreEmail@toto.com\r\n");
-	fputs($fp,";******** Permet de creer un nb limité de sim 0 = Limité / 1 = NO Limit ************\r\n");
-	fputs($fp,"Autorized = 1\r\n");
-	fputs($fp,";******** Texte en haut a droite dans les menus de OSMW ************\r\n");
-	fputs($fp,"VersionOSMW = Version N.C - ".$_SERVER['SERVER_NAME']."\r\n");
-	fputs($fp,";******** Constante du fichier Regions.ini ************\r\n");
-	fputs($fp,"CONST_InternalAddress = ".$_SERVER['SERVER_ADDR']."\r\n");
-	fputs($fp,"CONST_AllowAlternatePorts = False\r\n");
-	fputs($fp,"CONST_ExternalHostName = ".$_SERVER['SERVER_ADDR']."\r\n");
-	fputs($fp,";******** Acces à la base de donnee du serveur ************ ; Non Utilisé actuellement\r\n");
-	fputs($fp,"hostnameBDD = localhost\r\n");
-	fputs($fp,"database =  Opensim\r\n");
-	fputs($fp,"userBDD = login\r\n");
-	fputs($fp,"passBDD =  password\r\n");
-	fputs($fp,";******** Acces SSH du serveur ************\r\n");
-	fputs($fp,"hostnameSSH = ".$_SERVER['SERVER_ADDR']."\r\n");
-	fputs($fp,"usernameSSH =  login\r\n");
-	fputs($fp,"passwordSSH = password\r\n");
-	fclose ($fp);	
-	
-}
-//*************************************************************************************
-function Creation_MoteursINI(){
-	$fp = fopen ("moteurs.ini.php", "w+");  
-	fputs($fp,"[1]\r\n");
-	fputs($fp,";******** Libellé du moteur doit etre le meme que pour le SCREEN lancé ************\r\n");
-	fputs($fp,"name = Opensim_1\r\n");
-	fputs($fp,";******** Libellé du moteur dans OSMW ************\r\n");	
-	fputs($fp,"version = Version - Votre Region et ou vos sims\r\n");
-	fputs($fp,";******** Chemin physique du moteur sur le serveur  ************\r\n");	
-	fputs($fp,"address = /home/exemple/Opensim-0.7.1-Sim1/\r\n");
-	fputs($fp,";******** Base de donnéé du moteur  ************\r\n");	
-	fputs($fp,"DB_OS = Opensim\r\n");
-	fclose ($fp);		 
-}
-//*************************************************************************************
-function Creation_UsersINI(){
-	$fp = fopen ("users.ini.php", "w+");  
-	fputs($fp,"[root root]\r\n");
-	fputs($fp,"pass = osmw\r\n");
-	fputs($fp,"privilege = 4\r\n");
-	fclose ($fp);		 
-}
-//*************************************************************************************
-
-
 
 ?>

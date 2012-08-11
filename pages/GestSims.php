@@ -4,6 +4,7 @@ include 'config/variables.php';
 
 if (session_is_registered("authentification"))
 { // v&eacute;rification sur la session authentification 
+if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<HR>';
 	$ligne1 = '<B>Gestion des Sims connectes.</B>';
 	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.$_SESSION['opensim_select'].' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';
@@ -100,7 +101,22 @@ if (session_is_registered("authentification"))
 //******************************************************
 //  Affichage page principale
 //******************************************************
-
+	//*************** Formulaire de choix du moteur a selectionné *****************
+		// on se connecte à MySQL
+	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
+	mysql_select_db($database,$db);
+	$sql = 'SELECT * FROM moteurs';
+	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+	echo '<CENTER><FORM METHOD=POST ACTION="">
+		<select name="OSSelect">';
+	while($data = mysql_fetch_assoc($req))
+		{$sel="";
+		 if($data['id_os'] == $_SESSION['opensim_select']){$sel="selected";}
+			echo '<option value="'.$data['id_os'].'" '.$sel.'>'.$data['name'].' - '.$data['version'].'</option>';
+		}
+	mysql_close();	
+	echo'</select><INPUT TYPE="submit" VALUE="Choisir" ></FORM></CENTER><hr>';
+	//**************************************************************************
 // *** Lecture Fichier Regions.ini ***
 	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Regions.ini";	// *** V 0.7.1 ***
 	if (file_exists($filename2)) 

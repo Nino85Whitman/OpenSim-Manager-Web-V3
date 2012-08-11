@@ -89,7 +89,7 @@ if (isset($_POST['zooming']))
 else{$widthMap = "64";$heightMap= "64";  // Par default si pas zoom
 }
 
-echo '<hr><table border=0 align=center WIDTH=100%><tr align=center><td>
+echo '<table border=0 align=center WIDTH=100%><tr align=center><td>
 <FORM METHOD=POST ACTION="">
 	<select name="zooming">
 	  <option value="32" name="id">Zoom 1</option>

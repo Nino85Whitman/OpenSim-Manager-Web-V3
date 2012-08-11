@@ -2,7 +2,8 @@
 -- version 3.3.2deb1ubuntu1
 -- http://www.phpmyadmin.net
 --
--- Généré le : Mar 07 Août 2012 à 16:11
+-- Serveur: localhost
+-- Généré le : Sam 11 Août 2012 à 14:40
 -- Version du serveur: 5.1.63
 -- Version de PHP: 5.3.2-1ubuntu4.17
 
@@ -39,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `conf` (
 --
 
 INSERT INTO `conf` (`id`, `cheminAppli`, `destinataire`, `Autorized`, `VersionOSMW`, `urlOSMW`) VALUES
-(1, '/OSMW/', 'emailcontact@gmail.com', 1, 'V3', '');
+(1, '/OSMW/', 'votre_email@gmail.com', 1, 'V3.3', '');
 
 -- --------------------------------------------------------
 
@@ -62,10 +63,10 @@ CREATE TABLE IF NOT EXISTS `moteurs` (
 --
 
 INSERT INTO `moteurs` (`osAutorise`, `id_os`, `name`, `version`, `address`, `DB_OS`) VALUES
-(1, 'Opensim_1', 'Opensim_1', 'Sim sandbox 1 ', '/home/fgagod/Opensim-0.7.1-Sim1/', 'BDD_Opensim1'),
-(2, 'Opensim_2', 'Opensim_2', 'Public-Land', '/home/fgagod/Opensim-0.7.1-Sim2/', 'BDD_Opensim2'),
-(3, 'Opensim_3', 'Opensim_3', 'MY City', '/home/fgagod/Opensim-0.7.1-Sim3/', 'BDD_Opensim3'),
-(4, 'Opensim_4', 'Opensim_4', 'Parc Attraction', '/home/fgagod/Opensim-0.7.1-Sim4/', 'BDD_Opensim4');
+(1, 'Opensim_1', 'Opensim_1', 'Private-Land', '/home/Opensim/Opensim-0.7.1-Sim1/', 'BDD_Opensim1'),
+(2, 'Opensim_2', 'Opensim_2', 'Public-Land', '/home/Opensim/Opensim-0.7.1-Sim2/', 'BDD_Opensim2'),
+(3, 'Opensim_3', 'Opensim_3', 'City', '/home/Opensim/Opensim-0.7.1-Sim3/', 'BDD_Opensim3'),
+(4, 'Opensim_4', 'Opensim_4', 'Parc Attraction', '/home/Opensim/Opensim-0.7.1-Sim4/', 'BDD_Opensim4');
 
 -- --------------------------------------------------------
 

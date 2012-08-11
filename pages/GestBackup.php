@@ -26,26 +26,20 @@ if($_POST['cmd'])
 		
 	if($_POST['cmd'] == 'Sauvegarde fichiers opensim')
 	{
-	//	echo $_POST['name_sim'];
-	//	echo  $_SERVER['DOCUMENT_ROOT'];
-	
-	$fp = fopen ("files/liste_fichiersOS.txt", "w+");
-	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."ScreenSend"."\r\n");
-	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."RunOpensim.sh"."\r\n");	
-	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.ini"."\r\n");				
-	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini"."\r\n");
-	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."config-include/FlotsamCache.ini"."\r\n");	
-	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."config-include/GridCommon.ini"."\r\n");
-//	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.log"."\r\n");
-//	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.32BitLaunch.log"."\r\n");
-	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."startuplogo.txt"."\r\n");
-	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."startup_commands.txt"."\r\n");
-	fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address")."shutdown_commands.txt"."\r\n");
-	fclose ($fp);
-	
-	echo	$commande = 'cd '.$_SERVER['DOCUMENT_ROOT'].$cheminWeb.'files;while read line; do tar -P -c -T - -f '.INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_sim'].'_archive_conf_OS.tar.gz; done < liste_fichiersOS.txt';
+		echo $_POST['name_sim'].'<br>';
+		extract($_POST);
+		
+		$fp = fopen ("files/liste_fichiersOS.txt", "w+");
+		fputs("\n");
+		echo "trouvé : ".count($matrice).'<br>';
+		for ($i = 0; $i < count($_POST["matrice"]); $i++)
+		{
+			echo $_POST["matrice"][$i].'<br>';
+			fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST["matrice"][$i]."\n");
+		}
+		fclose ($fp);
+		$commande = 'cd '.$_SERVER['DOCUMENT_ROOT'].$cheminWeb.'files;while read line; do tar -P -c -T - -f '.INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_sim'].'_archive_conf_OS.tar.gz; done < liste_fichiersOS.txt;rm liste_fichiersOS.txt';
 	}	
-
 }
 
 if($_GET['g']){  $commande = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";rm ".$_GET['g'];}
@@ -228,14 +222,8 @@ function list_file($cur) {
 //*********************************************************************************************************
     foreach($tab_file as $elem) 
 	{
-	// http://www.yoursite.com/force-download.php?file=filepath
-	global  $cheminPhysique, $cheminAppli , $Address, $moteursOK;
-	$cheminAppli = INI_Conf($_SESSION['opensim_select'],"cheminAppli");
-	$cheminPhysique = INI_Conf_Moteur($_SESSION['opensim_select'],"address");
-	$Address = INI_Conf_Moteur($_SESSION['opensim_select'],"cheminAppli");
-	
-	if($_SESSION['privilege']==1){$cheminWeb ="#";}else{$cheminWeb = "force-download.php?file=".$cheminPhysique.$elem['name'];}
-	if($moteursOK == "OK"){$cheminWeb = "force-download.php?file=".$cheminPhysique.$elem['name'];}
+	if($_SESSION['privilege']==1){$cheminWeb ="#";}else{$cheminWeb = "pages/force-download.php?file=".INI_Conf_Moteur($_SESSION['opensim_select'],"address").$elem['name'];}
+
 		if(assocExt($elem['ext']) <> 'inconnu')
 		{
 		  echo "<tr>
@@ -393,40 +381,40 @@ $i=0;
 		$filename8 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."startup_commands.txt";
 		$filename9 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."shutdown_commands.txt";
 		//******************************************************
-	
+//	 <td><input type='checkbox' name='matrice[]' value='".$cheminPhysique.$elem['name']."'></td><td>&nbsp;</td></tr>";
 		//******************************************************
 		if (file_exists($filename0a))
-			{echo '<input type="checkbox" name="affichage" value="ScreenSend" checked disabled> Le fichier ScreenSend existe. <br>';}
+			{echo '<input type="checkbox" name="matrice[]" value="ScreenSend" checked > Le fichier ScreenSend existe. <br>';}
 			else {echo "<B>Le fichier ScreenSend n'existe pas.</B><br>";}	
 		if (file_exists($filename0b))
-			{echo '<input type="checkbox" name="affichage" value="RunOpensim.sh" checked disabled> Le fichier RunOpensim.sh existe. <br>';}
+			{echo '<input type="checkbox" name="matrice[]" value="RunOpensim.sh" checked > Le fichier RunOpensim.sh existe. <br>';}
 			else {echo "<B>Le fichier RunOpensim.sh n'existe pas.</B><br>";}
 		if (file_exists($filename1))
-			{echo '<input type="checkbox" name="affichage" value="OpenSim.ini" checked disabled> Le fichier OpenSim.ini existe. <br>';}
+			{echo '<input type="checkbox" name="matrice[]" value="OpenSim.ini" checked > Le fichier OpenSim.ini existe. <br>';}
 			else {echo "<B>Le fichier OpenSim.ini n'existe pas.</B><br>";}
 		if (file_exists($filename2))
-			{echo '<input type="checkbox" name="affichage" value="OpenSimDefaults.ini" checked disabled> Le fichier OpenSimDefaults.ini existe. <br>';}
+			{echo '<input type="checkbox" name="matrice[]" value="OpenSimDefaults.ini" checked > Le fichier OpenSimDefaults.ini existe. <br>';}
 			else {echo "<B>Le fichier OpenSimDefaults.ini n'existe pas.</B><br>";}
 		if (file_exists($filename3))
-			{echo '<input type="checkbox" name="affichage" value="FlotsamCache.ini" checked disabled> Le fichier FlotsamCache.ini existe. <br>';}
+			{echo '<input type="checkbox" name="matrice[]" value="FlotsamCache.ini" checked > Le fichier FlotsamCache.ini existe. <br>';}
 			else {echo "<B>Le fichier FlotsamCache.ini n'existe pas.</B><br>";}
 		if (file_exists($filename4))
-			{echo '<input type="checkbox" name="affichage" value="GridCommon.ini" checked disabled> Le fichier GridCommon.ini existe. <br>';}
+			{echo '<input type="checkbox" name="matrice[]" value="GridCommon.ini" checked > Le fichier GridCommon.ini existe. <br>';}
 			else {echo "<B>Le fichier GridCommon.ini n'existe pas.</B><br>";}
 		if (file_exists($filename5))
-			{echo '<input type="checkbox" name="affichage" value="OpenSim.log" disabled> Le fichier OpenSim.log existe. <br>';}
+			{echo '<input type="checkbox" name="matrice[]" value="OpenSim.log" > Le fichier OpenSim.log existe. <br>';}
 			else {echo "<B>Le fichier OpenSim.log n'existe pas.</B><br>";}
 		if (file_exists($filename6))
-			{echo '<input type="checkbox" name="affichage" value="OpenSim.32BitLaunch.log" disabled> Le fichier OpenSim.32BitLaunch.log existe. <br>';}
+			{echo '<input type="checkbox" name="matrice[]" value="OpenSim.32BitLaunch.log" > Le fichier OpenSim.32BitLaunch.log existe. <br>';}
 			else {echo "<B>Le fichier OpenSim.32BitLaunch.log n'existe pas.</B><br>";}
 		if (file_exists($filename7))
-			{echo '<input type="checkbox" name="affichage" value="startuplogo.txt" checked disabled> Le fichier startuplogo.txt existe. <br>';}
+			{echo '<input type="checkbox" name="matrice[]" value="startuplogo.txt" checked > Le fichier startuplogo.txt existe. <br>';}
 			else {echo "<B>Le fichier startuplogo.txt n'existe pas.</B><br>";}
 		if (file_exists($filename8))
-			{echo '<input type="checkbox" name="affichage" value="startup_commands.txt" checked disabled> Le fichier startup_commands.txt existe. <br>';}
+			{echo '<input type="checkbox" name="matrice[]" value="startup_commands.txt" checked > Le fichier startup_commands.txt existe. <br>';}
 			else {echo "<B>Le fichier startup_commands.txt n'existe pas.</B><br>";}
 		if (file_exists($filename9))
-			{echo '<input type="checkbox" name="affichage" value="shutdown_commands.txt" checked disabled> Le fichier shutdown_commands.txt existe. <br>';}
+			{echo '<input type="checkbox" name="matrice[]" value="shutdown_commands.txt" checked > Le fichier shutdown_commands.txt existe. <br>';}
 			else {echo "<B>Le fichier shutdown_commands.txt n'existe pas.</B><br>";}		
 		//******************************************************		
 

@@ -15,27 +15,35 @@ if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // 
 	if( $_SESSION['privilege']==2){$btnN1="";$btnN2="";}				//	Niv 2
 	if( $_SESSION['privilege']==1){$btnN1="";}							//	Niv 1
 	//******************************************************	
-//*******************************************************************	
 //*****************************************************************
-
-
 if($_POST['cmd'])
-{
-	// *** Affichage mode debug ***
-	echo $_POST['cmd'].'<br>';
-		
+{	//echo $_POST['cmd'].'<br>';
 	if($_POST['cmd'] == 'Archiver Moteur')
 	{
-		echo $_POST['name_sim'].'<br>';
+		echo "<b>ARCHIVAGE du moteur: ".$_POST['name_sim'].'</b><br>';
 		extract($_POST);
-		echo "trouvé : ".count($matrice).'<br>';
-		
+		echo "Nombre de fichier archivé(s) : ".count($matrice).'<hr>';
 		for ($i = 0; $i < count($_POST["matrice"]); $i++)
-		echo $_POST["matrice"][$i].'<br>';
-		
-	//	$commande = 'cd /var/www/OSMW;while read line; do tar -P -c -T - -f '.INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_sim'].'_archive_confOS.tar.gz; done < liste_fichiers.txt';
+		{
+		$ftp_server = $_POST["ftpserver"];
+		$login = $_POST["ftplogin"];
+		$password = $_POST["ftppass"];
+		$destination_file = $_POST["ftppath"].'/'.$_POST["matrice"][$i];
+		$source_file = INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST["matrice"][$i];		
+			$connect = ftp_connect($ftp_server);
+			if (ftp_login($connect, $login, $password)) {
+			echo "Connecté en tant que $login sur $ftp_server<br>";
+			} else {
+			echo "Connexion impossible en tant que ".$login."<br>";
+			}
+			$upload = ftp_put($connect, "$destination_file", "$source_file", FTP_ASCII);
+			if (!$upload) {
+			echo "Le transfert Ftp a échoué!<br>";
+			} else {
+			echo "Téléchargement de <b><u>".$_POST["matrice"][$i]."</u></b> >>>>>> ".$destination_file."<hr>";
+			}
+		}
 	}	
-
 }
 
 if($_GET['g']){  $commande = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";rm ".$_GET['g'];}
@@ -233,7 +241,7 @@ function list_file($cur) {
 		  <td><a href = '".$cheminWeb."'>".$elem['name']."</a></td><td>&nbsp;</td>
 		  <td align=\"right\">".formatSize($elem['size'])."</td><td>&nbsp;</td>
 		  <td>".date("d/m/Y H:i:s", $elem['date'])."</td><td>&nbsp;</td>
-		  <td><input type='checkbox' name='matrice[]' value='".$cheminPhysique.$elem['name']."'></td><td>&nbsp;</td></tr>";
+		  <td><input type='checkbox' name='matrice[]' value='".$elem['name']."'></td><td>&nbsp;</td></tr>";
 		}
     }
     echo "</table>";
@@ -369,7 +377,8 @@ echo '<table border="1" cellspacing="0" cellpadding="10" bordercolor="gray"><tr 
 if(!$dir) {  $dir = INI_Conf_Moteur($_SESSION['opensim_select'],"address");} 
 list_file(rawurldecode($dir)); 
 echo '</td></tr></table><HR>';
-
+echo 'Transfert vers un serveur ftp externe, archivage des fichiers.<br>';
+echo 'Serveur FTP: <INPUT TYPE="text" NAME="ftpserver" VALUE=""> Login: <INPUT TYPE="text" NAME="ftplogin" VALUE=""> Password: <INPUT TYPE="password" NAME="ftppass" VALUE=""> Chemin: <INPUT TYPE="text" NAME="ftppath" VALUE="">';
 echo '<INPUT TYPE="submit" VALUE="Archiver Moteur" NAME="cmd" ><INPUT TYPE="hidden" VALUE="'.$_SESSION['opensim_select'].'" NAME="name_sim">';
 echo '</FORM>';	
 //***********************************************************************************************	
