@@ -18,34 +18,44 @@ if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // 
 //*******************************************************************	
 //*****************************************************************
 
+//******************************************************
+// Actions des Boutons
+//******************************************************
+// *** Affichage mode debug ***
+echo $_POST['cmd'].'<br>';
 
-if($_POST['cmd'])
-{
-	// *** Affichage mode debug ***
-	echo $_POST['cmd'].'<br>';
-		
-	if($_POST['cmd'] == 'Sauvegarde fichiers opensim')
-	{
-		echo $_POST['name_sim'].'<br>';
-		extract($_POST);
-		
-		$fp = fopen ("files/liste_fichiersOS.txt", "w+");
-		fputs("\n");
-		echo "trouvé : ".count($matrice).'<br>';
-		for ($i = 0; $i < count($_POST["matrice"]); $i++)
-		{
-			echo $_POST["matrice"][$i].'<br>';
-			fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST["matrice"][$i]."\n");
-		}
-		fclose ($fp);
-		$commande = 'cd '.$_SERVER['DOCUMENT_ROOT'].$cheminWeb.'files;while read line; do tar -P -c -T - -f '.INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_sim'].'_archive_conf_OS.tar.gz; done < liste_fichiersOS.txt;rm liste_fichiersOS.txt';
-	}	
+if($_POST['cmd'] == "Telecharger")	// Actions Telecharger fichier
+{ 
+//	echo $_POST['name_sim'];
+//	echo $_POST['name_file'];
+	$a=DownloadFile(INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_file']);
 }
-
-if($_GET['g']){  $commande = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";rm ".$_GET['g'];}
+if($_POST['cmd'] == "Supprimer")	// Actions supprimer fichier
+{ 
+//	echo $_POST['name_sim'];
+//	echo $_POST['name_file'];
+ $commande = $cmd_SYS_Delete_file.$_POST['name_file'].";rm ".$_POST['name_file'];
+}		
+if($_POST['cmd'] == 'Sauvegarde fichiers opensim')		// Actions sauvegarde conf 
+{
+	echo $_POST['name_sim'].'<br>';
+	extract($_POST);
+	
+	$fp = fopen ("files/liste_fichiersOS.txt", "w+");
+	fputs("\n");
+	echo "trouvé : ".count($matrice).'<br>';
+	for ($i = 0; $i < count($_POST["matrice"]); $i++)
+	{
+		echo $_POST["matrice"][$i].'<br>';
+		fputs($fp,INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST["matrice"][$i]."\n");
+	}
+	fclose ($fp);
+	$commande = 'cd '.$_SERVER['DOCUMENT_ROOT'].$cheminWeb.'files;while read line; do tar -P -c -T - -f '.INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_sim'].'_archive_conf_OS.tar.gz; done < liste_fichiersOS.txt;rm liste_fichiersOS.txt';
+}	
 //**************************************************************************
 
 
+//**************************************************************************
 // Envoi de la commande par ssh  *******************************************
 //**************************************************************************
 if($commande <> '')
@@ -226,8 +236,9 @@ function list_file($cur) {
 
 		if(assocExt($elem['ext']) <> 'inconnu')
 		{
-		  echo "<tr>
-		  <td><a href = '".$cheminWeb."'>".$elem['name']."</a></td><td>&nbsp;</td>
+		  echo "<tr><td>";
+		  echo '<FORM METHOD=POST ACTION=""><INPUT TYPE="submit" VALUE="Telecharger" NAME="cmd" '.$btnN3.'><INPUT TYPE="submit" VALUE="Supprimer" NAME="cmd" '.$btnN3.'><INPUT TYPE="hidden" VALUE="'.$_SESSION['opensim_select'].'" NAME="name_sim"><INPUT TYPE="hidden" VALUE="'.$elem['name'].'" NAME="name_file">&nbsp;&nbsp;&nbsp;'.$elem['name'].'&nbsp;&nbsp;&nbsp;</FORM>';
+		  echo "</td><td>&nbsp;</td>
 		  <td align=\"right\">".formatSize($elem['size'])."</td><td>&nbsp;</td>
 		  <td>".date("d/m/Y H:i:s", $elem['date'])."</td><td>&nbsp;</td></tr>";
 		}

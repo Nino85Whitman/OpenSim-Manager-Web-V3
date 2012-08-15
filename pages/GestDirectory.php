@@ -10,14 +10,16 @@ if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<hr>';
 	//*****************************************************
 	// Si NIV 1 - Verification Moteur Autorisé ************
+
 	if($_SESSION['osAutorise'] != '')
 	{
 	$osAutorise = explode(";", $_SESSION['osAutorise']);
 	//echo count($osAutorise);
-	//echo $_SESSION['osAutorise'];
+	// $_SESSION['osAutorise'];
 		for($i=0;$i < count($osAutorise);$i++)
 		{	if(INI_Conf_Moteur($_SESSION['opensim_select'],"osAutorise") == $osAutorise[$i]){$moteursOK="OK";}    } 
 	}
+
 	//*****************************************************
 	//******************************************************
 	$btnN1 = "disabled"; $btnN2 = "disabled"; $btnN3 = "disabled";
@@ -26,16 +28,22 @@ if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	if( $_SESSION['privilege']==2){$btnN1="";$btnN2="";}				//	Niv 2
 	if($moteursOK == "OK"){if( $_SESSION['privilege']==1){$btnN1="";$btnN2="";$btnN3="";}}		//	Niv 1 + SECURITE MOTEUR
 	//******************************************************//******************************************************
-	
-/* racine */
-$cheminPhysique = INI_Conf_Moteur($_SESSION['opensim_select'],"address");
-$Address = $hostnameSSH;
 
 //******************************************************
-// CONSTRUCTION de la commande pour ENVOI sur la console via  SSH
+// Actions des Boutons
 //******************************************************
-// exemple "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";chmod 777 OpenSim.log;rm OpenSim.log";
-if($_GET['f']){  $commande = $cmd_SYS_Delete_file.$_GET['f'].";rm ".$_GET['f'];}	 
+if($_POST['cmd'] == "Telecharger")	// Actions Telecharger fichier
+{ 
+//	echo $_POST['name_sim'];
+//	echo $_POST['name_file'];
+	$a=DownloadFile(INI_Conf_Moteur($_SESSION['opensim_select'],"address").$_POST['name_file']);
+}
+if($_POST['cmd'] == "Supprimer")	// Actions supprimer fichier
+{ 
+//	echo $_POST['name_sim'];
+//	echo $_POST['name_file'];
+ $commande = $cmd_SYS_Delete_file.$_POST['name_file'].";rm ".$_POST['name_file'];
+}
 
 //**************************************************************************
 // Envoi de la commande par ssh  *******************************************
@@ -67,7 +75,6 @@ if($_GET['f']){  $commande = $cmd_SYS_Delete_file.$_GET['f'].";rm ".$_GET['f'];}
 		}	
 
 	}
-
 
 /* infos à extraire */
 function addScheme($entry,$base,$type) {
@@ -136,7 +143,6 @@ function list_file($cur) {
     usort($tab_dir,"cmp_".$order);
     usort($tab_file,"cmp_".$order);
     /* affichage */
-
     echo "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
     echo "<tr style=\"font-size:8pt;font-family:arial;\">
     <th>".(($order=='name')?(($asc=='a')?'/\\ ':'\\/ '):'')."Nom</th><td>&nbsp;</td>
@@ -147,24 +153,26 @@ function list_file($cur) {
 //*********************************************************************************************************
     foreach($tab_file as $elem) 
 	{
-	global  $cheminPhysique, $Address, $moteursOK;
-
-	$cheminPhysique = INI_Conf_Moteur($_SESSION['opensim_select'],"address");
-	
-	if($_SESSION['privilege']==1){$cheminWeb ="#";}else{$cheminWeb = "pages/force-download.php?file=".$cheminPhysique.$elem['name'];}
-	if($moteursOK == "OK"){$cheminWeb = "pages/force-download.php?file=".$cheminPhysique.$elem['name'];}
 		if(assocExt($elem['ext']) <> 'inconnu')
 		{
 		  echo "<tr>";
-		  echo "<td><img src='images/hippo.gif' />&nbsp;<a href = '".$cheminWeb."'>".$elem['name']."</a></td>
-		  <td>&nbsp;&nbsp;&nbsp;</td>";
-		  echo "<td align=\"right\">".formatSize($elem['size'])."</td>
-		  <td>&nbsp;&nbsp;&nbsp;</td>
+
+		  echo '<td>';
+		  	if($_SESSION['osAutorise'] != '')
+			{$osAutorise = explode(";", $_SESSION['osAutorise']);
+				for($i=0;$i < count($osAutorise);$i++){	if(INI_Conf_Moteur($_SESSION['opensim_select'],"osAutorise") == $osAutorise[$i]){$moteursOK="OK";}} 
+			}
+			if($_SESSION['privilege']>=3)
+				{echo '<FORM METHOD=POST ACTION=""><INPUT TYPE="submit" VALUE="Telecharger" NAME="cmd" '.$btnN3.'><INPUT TYPE="submit" VALUE="Supprimer" NAME="cmd" '.$btnN3.'><INPUT TYPE="hidden" VALUE="'.$_SESSION['opensim_select'].'" NAME="name_sim"><INPUT TYPE="hidden" VALUE="'.$elem['name'].'" NAME="name_file">&nbsp;&nbsp;&nbsp;'.$elem['name'].'&nbsp;&nbsp;&nbsp;</FORM>';}
+			elseif($moteursOK == "OK")
+				{echo '<FORM METHOD=POST ACTION=""><INPUT TYPE="submit" VALUE="Telecharger" NAME="cmd" '.$btnN3.'><INPUT TYPE="submit" VALUE="Supprimer" NAME="cmd" '.$btnN3.'><INPUT TYPE="hidden" VALUE="'.$_SESSION['opensim_select'].'" NAME="name_sim"><INPUT TYPE="hidden" VALUE="'.$elem['name'].'" NAME="name_file">&nbsp;&nbsp;&nbsp;'.$elem['name'].'&nbsp;&nbsp;&nbsp;</FORM>';}
+			else
+				{echo '<FORM METHOD=POST ACTION=""><INPUT TYPE="submit" VALUE="Telecharger" NAME="cmd" disabled><INPUT TYPE="submit" VALUE="Supprimer" NAME="cmd" disabled><INPUT TYPE="hidden" VALUE="'.$_SESSION['opensim_select'].'" NAME="name_sim"><INPUT TYPE="hidden" VALUE="'.$elem['name'].'" NAME="name_file">&nbsp;&nbsp;&nbsp;'.$elem['name'].'&nbsp;&nbsp;&nbsp;</FORM>';}
+		
+		  echo '</td><td>&nbsp;&nbsp;&nbsp;</td>';
+		  echo "<td align=\"right\">".formatSize($elem['size'])."</td><td>&nbsp;&nbsp;&nbsp;</td>
 		  <td>".date("d/m/Y H:i:s", $elem['date'])."</td><td>&nbsp;&nbsp;</td>
-		  <td>".assocExt($elem['ext'])."</td>
-		  <td>&nbsp;&nbsp;&nbsp;</td>
-		  <td>";
-		  if( $_SESSION['privilege']>=3 xor $moteursOK == "OK"){echo "<a href = '?f=".$elem['name']."'>Supprimer</a>";}
+		  <td>".assocExt($elem['ext'])."</td><td>&nbsp;&nbsp;&nbsp;</td><td>";
 		  echo " </td></tr>\n";
 		}
     }
@@ -289,30 +297,33 @@ function cmp_ext($a,$b) {
         return ($a['ext'] > $b['ext']) ? -1 : 1;
     }
 }
-
-	//*************** Formulaire de choix du moteur a selectionné *****************
-		// on se connecte à MySQL
-	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-	mysql_select_db($database,$db);
-	$sql = 'SELECT * FROM moteurs';
-	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
-	echo '<CENTER><FORM METHOD=POST ACTION="">
-		<select name="OSSelect">';
-	while($data = mysql_fetch_assoc($req))
-		{$sel="";
-		 if($data['id_os'] == $_SESSION['opensim_select']){$sel="selected";}
-			echo '<option value="'.$data['id_os'].'" '.$sel.'>'.$data['name'].' - '.$data['version'].'</option>';
-		}
-	mysql_close();	
-	echo'</select><INPUT TYPE="submit" VALUE="Choisir" ></FORM></CENTER><hr>';
-	//**************************************************************************
-
-echo '<table border="1" cellspacing="0" cellpadding="10" bordercolor="gray"><tr valign="top">';
+//*************** Formulaire de choix du moteur a selectionné *****************
+	// on se connecte à MySQL
+$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
+mysql_select_db($database,$db);
+$sql = 'SELECT * FROM moteurs';
+$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+echo '<CENTER><FORM METHOD=POST ACTION="">
+	<select name="OSSelect">';
+while($data = mysql_fetch_assoc($req))
+	{$sel="";
+	 if($data['id_os'] == $_SESSION['opensim_select']){$sel="selected";}
+		echo '<option value="'.$data['id_os'].'" '.$sel.'>'.$data['name'].' - '.$data['version'].'</option>';
+	}
+mysql_close();	
+echo'</select><INPUT TYPE="submit" VALUE="Choisir" ></FORM></CENTER><hr>';
+//**************************************************************************
+	
+//**************************************************************************
 //<!-- liste des fichiers -->
-
+echo '<table border="1" cellspacing="0" cellpadding="10" bordercolor="gray"><tr valign="top">';
 /* repertoire initial à lister */
 if(!$dir) {  $dir = INI_Conf_Moteur($_SESSION['opensim_select'],"address");} 
 list_file(rawurldecode($dir)); 
 echo '</td></tr></table><HR>';
+//**************************************************************************
 
 }else{header('Location: index.php');   }
+
+
+

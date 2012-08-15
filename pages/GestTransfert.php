@@ -237,8 +237,9 @@ function list_file($cur) {
 	if($moteursOK == "OK"){$cheminWeb = "force-download.php?file=".$cheminPhysique.$elem['name'];}
 		if(assocExt($elem['ext']) <> 'inconnu')
 		{
-		  echo "<tr>
-		  <td><a href = '".$cheminWeb."'>".$elem['name']."</a></td><td>&nbsp;</td>
+		  echo "<tr><td>";
+		  echo '&nbsp;&nbsp;&nbsp;'.$elem['name'].'&nbsp;&nbsp;&nbsp;';
+		  echo "</td><td>&nbsp;</td>
 		  <td align=\"right\">".formatSize($elem['size'])."</td><td>&nbsp;</td>
 		  <td>".date("d/m/Y H:i:s", $elem['date'])."</td><td>&nbsp;</td>
 		  <td><input type='checkbox' name='matrice[]' value='".$elem['name']."'></td><td>&nbsp;</td></tr>";

@@ -1,6 +1,6 @@
 <?php
 
-include 'osmw_conf.php';
+include 'config/osmw_conf.php';
 
 
 //******************************************************
