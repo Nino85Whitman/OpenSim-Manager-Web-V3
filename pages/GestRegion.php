@@ -160,7 +160,22 @@ if($_POST['cmd'])
 //******************************************************
 //  Affichage page principale
 //******************************************************
-	
+	//*************** Formulaire de choix du moteur a selectionné *****************
+	// on se connecte à MySQL
+	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
+	mysql_select_db($database,$db);
+	$sql = 'SELECT * FROM moteurs';
+	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+	echo '<CENTER><FORM METHOD=POST ACTION="">
+		<select name="OSSelect">';
+	while($data = mysql_fetch_assoc($req))
+		{$sel="";
+		 if($data['id_os'] == $_SESSION['opensim_select']){$sel="selected";}
+			echo '<option value="'.$data['id_os'].'" '.$sel.'>'.$data['name'].' - '.$data['version'].'</option>';
+		}
+	mysql_close();	
+	echo'</select><INPUT TYPE="submit" VALUE="Choisir" ></FORM></CENTER><hr>';
+	//**************************************************************************
 	// *** Lecture Fichier Regions.ini ***
 	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Regions.ini";	// *** V 0.7.1 ***
 
@@ -172,12 +187,38 @@ if($_POST['cmd'])
 	$tableauIni = parse_ini_file($filename, true);
 	if($tableauIni == FALSE){echo 'prb lecture ini '.$filename.'<br>';}
 	$i=0;
-	echo '<b><u>Nb regions Max:</u> 4  |  '.'<u>Nb regions connectes:</u> '.count($tableauIni).'</b><BR><br>';
-	if(count($tableauIni) >= 4)
+	echo '<b><u>Nb regions Max:</u> '.INI_Conf("0","NbAutorized").'  |  '.'<u>Nb regions connectes:</u> '.count($tableauIni).'</b><BR><br>';
+	
+	if(count($tableauIni) >= INI_Conf("0","NbAutorized"))
 		{$btn = 'disabled';}else{$btn=$btnN3;}
 	if(INI_Conf("Parametre_OSMW","Autorized") == '1' )
 		{$btn = '';}
 	echo '<FORM METHOD=POST ACTION=""><INPUT TYPE="submit" VALUE="Ajouter" NAME="cmd" '.$btn.'> Permet d\'ajouter une nouvelle region au moteur Opensim.</FORM></center>';
+	
+	
+	// *** Lecture Fichier OpenSimDefaults ***
+		$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini";		//*** V 0.7.1
+	if (file_exists($filename2)) 
+		{//echo "Le fichier $filename2 existe.<br>";
+		$filename = $filename2 ;
+		}else {//echo "Le fichier $filename2 n'existe pas.<br>";
+		}
+
+	// **** Recuperation du port http du serveur ******		
+		if (!$fp = fopen($filename,"r")) 
+		{echo "Echec de l'ouverture du fichier ".$filename;}		
+		$tabfich=file($filename); 
+		for( $i = 1 ; $i < count($tabfich) ; $i++ )
+		{
+		$porthttp = strstr($tabfich[$i],"http_listener_port");
+			if($porthttp)
+			{
+				$posEgal = strpos($porthttp,'=');
+				$longueur = strlen($porthttp);
+				$srvOS = substr($porthttp, $posEgal + 1);
+			}
+		}
+		fclose($fp);
 	
 //******************************************************	
 	echo '<hr><table width="100%" BORDER=0><TR>';
@@ -187,9 +228,10 @@ if($_POST['cmd'])
 		echo '<tr>
 		<FORM METHOD=POST ACTION=""><INPUT TYPE = "hidden" NAME = "name_sim" VALUE="'.$key.'" >
 		<tr><td colspan=6><b><u>'.$key.'</u></b></td></tr>
-		<tr><td>Nom de la region</td><td>Coordonnes</td><td>Port Http region</td><td>IP Public</td><td>Region UUID</td></tr>
+		<tr><td>Nom de la region</td><td>Coordonnes</td><td>Port Http Moteur Opensim</td><td>Port Http region</td><td>IP Public</td><td>Region UUID</td></tr>
 		<tr><td><INPUT TYPE = "text" NAME = "NewName" VALUE = "'.$key.'" '.$btnN3.'></td>
 			<td><INPUT TYPE = "text" NAME = "Location" VALUE = "'.$tableauIni[$key]['Location'].'" '.$btnN3.'></td>
+			<td><INPUT TYPE = "text" NAME = "InternalPortMoteur" VALUE = "'.$srvOS.'" disabled></td>
 			<td><INPUT TYPE = "text" NAME = "InternalPort" VALUE = "'.$tableauIni[$key]['InternalPort'].'" '.$btnN3.'></td>
 			<td>'.$tableauIni[$key]['ExternalHostName'].'</td>
 			<td><INPUT TYPE = "text" NAME = "RegionUUID" VALUE = "'.$tableauIni[$key]['RegionUUID'].'" '.$btnN3.'></td>

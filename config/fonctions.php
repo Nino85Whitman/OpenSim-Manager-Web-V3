@@ -50,6 +50,9 @@ function INI_Conf($cles,$valeur){
 		case "Autorized":
 			$Version=$data['Autorized'];
 			break;
+		case "NbAutorized":
+			$Version=$data['NbAutorized'];
+			break;
 		case "VersionOSMW":
 			$Version=$data['VersionOSMW'];
 			break;
