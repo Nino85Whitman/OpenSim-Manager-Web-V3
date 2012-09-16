@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `conf` (
   `cheminAppli` varchar(50) NOT NULL,
   `destinataire` varchar(50) NOT NULL,
   `Autorized` int(1) NOT NULL,
+  `NbAutorized` int(11) NOT NULL,
   `VersionOSMW` varchar(50) NOT NULL,
   `urlOSMW` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
@@ -39,10 +40,11 @@ CREATE TABLE IF NOT EXISTS `conf` (
 -- Contenu de la table `conf`
 --
 
-INSERT INTO `conf` (`id`, `cheminAppli`, `destinataire`, `Autorized`, `VersionOSMW`, `urlOSMW`) VALUES
-(1, '/OSMW/', 'votre_email@gmail.com', 1, 'V3.3', '');
+INSERT INTO `conf` (`id`, `cheminAppli`, `destinataire`, `Autorized`, `NbAutorized`, `VersionOSMW`, `urlOSMW`) VALUES
+(1, '/OSMW/', 'votre_email@gmail.com', 1, 4, 'V3.4', '');
 
 -- --------------------------------------------------------
+
 
 --
 -- Structure de la table `moteurs`
