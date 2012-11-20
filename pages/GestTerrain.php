@@ -114,7 +114,7 @@ if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	//**************************************************************************
 // *** Lecture Fichier Region.ini ***
 //	$filename1 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Region.ini";	// *** V 0.6.9 ***
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Regions.ini";	// *** V 0.7.1 ***
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	// *** V 0.7.1 ***
 	if (file_exists($filename1)) 
 		{//echo "Le fichier $filename1 existe.<br>";
 		$filename = $filename1 ;

@@ -110,7 +110,7 @@ if($_POST['cmd'])
 	
 	//$tableauIni = parse_ini_file(INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Region.ini", true);
 	// *** Lecture Fichier Region.ini ***
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Regions.ini";	// *** V 0.7.1 ***
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	// *** V 0.7.1 ***
 	if (file_exists($filename2)) 
 		{//echo "Le fichier $filename2 existe.<br>";
 		$filename = $filename2 ;

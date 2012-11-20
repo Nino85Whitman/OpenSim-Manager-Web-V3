@@ -94,7 +94,7 @@ if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // 
 				fclose($fp);
 				
 				 // *** Lecture Fichier Regions.ini ***
-				$filename2 = $data["address"]."Regions/Regions.ini";	// *** V 0.7.1 ***
+				$filename2 = $data["address"]."Regions/".$FichierINIRegions;	// *** V 0.7.1 ***
 				if (file_exists($filename2)) 
 					{$filename = $filename2 ;}
 				$tableauIni = parse_ini_file($filename, true);

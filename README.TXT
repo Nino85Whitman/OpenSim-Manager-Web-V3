@@ -1,4 +1,4 @@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
 Configuration requise pour OSWebManager:
 	-- SSH / Mono / Apache / Mysql / PHPMyAdmin* / Lib php SSH2  (*pas nécessaire si autre moyen)
 Fonctionnement:

@@ -28,7 +28,7 @@ if($_POST['cmd'])
 	
 	// *** Lecture Fichier Regions.ini ***
 	$IP_Public = $hostnameSSH;
-	$filename = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Regions.ini";	// *** V 0.7.1 ***
+	$filename = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	// *** V 0.7.1 ***
 	
 	if (file_exists($filename)) 
 		{//echo "Le fichier $filename1 existe.<br>";
@@ -177,7 +177,7 @@ if($_POST['cmd'])
 	echo'</select><INPUT TYPE="submit" VALUE="Choisir" ></FORM></CENTER><hr>';
 	//**************************************************************************
 	// *** Lecture Fichier Regions.ini ***
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Regions.ini";	// *** V 0.7.1 ***
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	// *** V 0.7.1 ***
 
 	if (file_exists($filename2)) 
 		{//echo "Le fichier $filename2 existe.<br>";

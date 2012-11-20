@@ -136,8 +136,8 @@ if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // 
 			echo "********************************<br>";
 			
 			// *** Lecture Fichier Regions.ini ***
-				$tableauIni = parse_ini_file($data["address"]."Regions/Regions.ini", true);
-				if($tableauIni == FALSE){echo 'prb lecture ini '.$data["address"]."Regions/Regions.ini".'<br>';}else {echo 'Fichier PRESENT Regions.ini OK<br>';}
+				$tableauIni = parse_ini_file($data["address"]."Regions/".$FichierINIRegions, true);
+				if($tableauIni == FALSE){echo 'prb lecture ini '.$data["address"]."Regions/".$FichierINIRegions.'<br>';}else {echo 'Fichier PRESENT Regions.ini OK<br>';}
 				echo "********************************<br>";
 				
 				// *** Fichier PRESENT Fichier OpenSimDefaults.ini ***

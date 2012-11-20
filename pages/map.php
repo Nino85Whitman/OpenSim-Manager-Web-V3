@@ -38,8 +38,8 @@ for($x=-30;$x < 30;$x++) 		// Limite de 50x50
 		//*******************************************************
 		//*******************************************************
 		// Pour chaque serveur
-		$tableauIni = parse_ini_file($data['address']."Regions/Regions.ini", true);
-		if($tableauIni == FALSE){echo 'prb lecture ini '.$data['address']."Regions/Regions.ini".'<br>';}
+		$tableauIni = parse_ini_file($data['address']."Regions/".$FichierINIRegions, true);
+		if($tableauIni == FALSE){echo 'prb lecture ini '.$data['address']."Regions/".$FichierINIRegions.'<br>';}
 	//	echo '<hr>Serveur Name:'.$data['name'].' - Version:'.$data['version'].'<br>';
 		while (list($keyi, $vali) = each($tableauIni))
 		{

@@ -10,6 +10,7 @@ $Couleur_Feux_V = "images/Feux_Vert.jpg";
 $Couleur_Feux_O = "images/Feux_Orange.jpg";
 $Couleur_Feux_R = "images/Feux_Rouge.jpg";
 
+$FichierINIRegions = "Regions.ini";
 //******************************************************
 // PARAMETRAGE DES COMMANDES DISPONIBLE POUR OSMANAGERWEB 
 //******************************************************
