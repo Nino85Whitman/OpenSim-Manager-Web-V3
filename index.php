@@ -47,7 +47,7 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['pas
 			$auth = true;
 			$_SESSION['privilege'] = $data['privilege'];
 			$_SESSION['osAutorise'] = $data['osAutorise'];
-			session_register("authentification");
+			$_SESSION['authentification']=true;
 			break;
 			}
 		}
@@ -70,16 +70,14 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['pas
 //****************************************************************************************
 //**************************** PAGE EN ACCES SECURISE ************************************
 //**************** DEBUT *****************************
-if (session_is_registered("authentification")){ // vérification sur la session authentification 
+//if (isset($_SESSION['authentification']))){ // vérification sur la session authentification 
+if (isset($_SESSION['authentification'])){ // vérification sur la session authentification 
 	// ********** SI le moteur selectionné à changé
 	if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	
 	// Menu
 	echo $MENU_LATTERALE.'<HR>';
 	
-	// ********** Page appelé pour le telechargement de fichier
-	if($_GET['f']){include('pages/GestDirectory.php');exit;}	 
-	if($_GET['g']){include('pages/GestBackup.php');echo $PIED_DE_PAGE;exit;}	 
 	// REDIRECTION DES PAGES *************************************************************
 	if($_POST['a'] or $_GET['a']){
 		if($_POST['a']){$vers = $_POST['a'];}
@@ -98,7 +96,7 @@ if (session_is_registered("authentification")){ // vérification sur la session a
 			if($vers =="9"){include('pages/contact.php');}								// V3	# Helpdesk Utilisateur
 			if($vers =="10"){include('pages/GestDirectory.php');}						// V3	# Gestion des Fichiers
 			if($vers =="11"){include('pages/map.php');}									// V3	# MAP
-			if($vers =="12"){include('pages/GestIdentite.php');}		// admin		// V3	#Connection a Admin Grille OSMW 
+		//	if($vers =="12"){include('pages/GestIdentite.php');}		// admin		// V3	#Connection a Admin Grille OSMW 
 			if($vers =="13"){include('pages/Aide.php');}  								// V3	# Aide
 			if($vers =="14"){include('pages/Apropos.php');}  							// V3	# Les remerciements
 			if($vers =="15"){include('pages/GestUsers.php');}			// admin		// V3	# Gestion des utilisateurs
@@ -180,7 +178,7 @@ if (session_is_registered("authentification")){ // vérification sur la session a
 		echo '<div class="block" id="pale-blue"><a href="?a=5"><button>Editer la configuration Opensim.</button></a></div>';
 		echo '<div class="block" id="pale-blue"><a href="?a=18"><button>Configuration de OpenSim Manager Web.</button></a></div>';	
 		echo '<div class="block" id="pale-blue"><a href="?a=15"><button>Gestion des Utilisateurs.</button></a></div>';
-		echo '<div class="block" id="pale-blue"><a href="?a=12"><button>Connectivité du Serveur OSMW.</button></a></div>';
+	//	echo '<div class="block" id="pale-blue"><a href="?a=12"><button>Connectivité du Serveur OSMW.</button></a></div>';
 		echo '<div class="block" id="pale-blue"><a href="?a=16"><button>Sauvegardes config Opensim.</button></a></div>';
 		echo '<div class="block" id="pale-blue"><a href="?a=20"><button>Transfert des Sauvegardes.</button></a></div>';
 	//	echo '<div class="block" id="pale-blue"><a href="?a=19"><button>Gestion XMLRPC.*</button></a></div>';

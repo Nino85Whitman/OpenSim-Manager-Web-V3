@@ -1,7 +1,7 @@
 <?php 
 include 'config/variables.php';
 
-if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
+if (isset($_SESSION['authentification']) && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
 	if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<HR>';
 	$ligne1 = '<B>Gestion des sauvegardes pour les moteurs Opensim.</B>';
@@ -112,7 +112,7 @@ if($commande <> '')
 	
 		//**************************************************************************	
 	// *** Lecture Fichier Region.ini ***
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	// *** V 0.7.1 ***
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	 
 	if (file_exists($filename2)) 
 		{//echo "Le fichier $filename2 existe.<br>";
 		$filename = $filename2 ;
@@ -122,7 +122,7 @@ if($commande <> '')
 	if($tableauIni == FALSE){echo 'prb lecture ini $filename<br>';}
 	
 	// *** Lecture Fichier OpenSimDefaults ***
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini";		//*** V 0.7.1
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address").$FichierINIOpensim;		
 	if (file_exists($filename2)) 
 		{//echo "Le fichier $filename2 existe.<br>";
 		$filename = $filename2 ;
@@ -383,7 +383,7 @@ $i=0;
 		$filename0a = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."ScreenSend";	
 		$filename0b = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."RunOpensim.sh";	
 		$filename1 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.ini";				
-		$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini";
+		$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address").$FichierINIOpensim;
 		$filename3 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."config-include/FlotsamCache.ini";	
 		$filename4 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."config-include/GridCommon.ini";
 		$filename5 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.log";
@@ -404,7 +404,7 @@ $i=0;
 			{echo '<input type="checkbox" name="matrice[]" value="OpenSim.ini" checked > Le fichier OpenSim.ini existe. <br>';}
 			else {echo "<B>Le fichier OpenSim.ini n'existe pas.</B><br>";}
 		if (file_exists($filename2))
-			{echo '<input type="checkbox" name="matrice[]" value="OpenSimDefaults.ini" checked > Le fichier OpenSimDefaults.ini existe. <br>';}
+			{echo '<input type="checkbox" name="matrice[]" value="'.$FichierINIOpensim.'" checked > Le fichier OpenSimDefaults.ini existe. <br>';}
 			else {echo "<B>Le fichier OpenSimDefaults.ini n'existe pas.</B><br>";}
 		if (file_exists($filename3))
 			{echo '<input type="checkbox" name="matrice[]" value="FlotsamCache.ini" checked > Le fichier FlotsamCache.ini existe. <br>';}

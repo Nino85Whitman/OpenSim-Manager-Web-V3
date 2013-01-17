@@ -1,7 +1,7 @@
 <?php 
 include 'config/variables.php';
 
-if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
+if (isset($_SESSION['authentification']) && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
 	echo '<HR>';
 	$ligne1 = '<B>Configuration des Sims connectees.</B>';
 	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.$_SESSION['opensim_select'].' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';
@@ -9,13 +9,16 @@ if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // 
 	echo '<hr>';
 	
 	//******************************************************
+
 	$btnN1 = "disabled"; $btnN2 = "disabled"; $btnN3 = "disabled";
 	if( $_SESSION['privilege']==4){$btnN1="";$btnN2="";$btnN3="";}		//  Niv 4	
 	if( $_SESSION['privilege']==3){$btnN1="";$btnN2="";$btnN3="";}		//  Niv 3
 	if( $_SESSION['privilege']==2){$btnN1="";$btnN2="";}				//	Niv 2
 	if( $_SESSION['privilege']==1){$btnN1="";}							//	Niv 1
 	//******************************************************
+
 //******************************************************
+
 // CONSTRUCTION de la commande pour ENVOI sur la console via  SSH
 //******************************************************
 if($_POST['cmd'])
@@ -28,7 +31,7 @@ if($_POST['cmd'])
 	
 	// *** Lecture Fichier Regions.ini ***
 	$IP_Public = $hostnameSSH;
-	$filename = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	// *** V 0.7.1 ***
+	$filename = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Regions.ini";	// *** V 0.7.1 ***
 	
 	if (file_exists($filename)) 
 		{//echo "Le fichier $filename1 existe.<br>";
@@ -160,24 +163,10 @@ if($_POST['cmd'])
 //******************************************************
 //  Affichage page principale
 //******************************************************
-	//*************** Formulaire de choix du moteur a selectionné *****************
-	// on se connecte à MySQL
-	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-	mysql_select_db($database,$db);
-	$sql = 'SELECT * FROM moteurs';
-	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
-	echo '<CENTER><FORM METHOD=POST ACTION="">
-		<select name="OSSelect">';
-	while($data = mysql_fetch_assoc($req))
-		{$sel="";
-		 if($data['id_os'] == $_SESSION['opensim_select']){$sel="selected";}
-			echo '<option value="'.$data['id_os'].'" '.$sel.'>'.$data['name'].' - '.$data['version'].'</option>';
-		}
-	mysql_close();	
-	echo'</select><INPUT TYPE="submit" VALUE="Choisir" ></FORM></CENTER><hr>';
-	//**************************************************************************
+	
 	// *** Lecture Fichier Regions.ini ***
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	// *** V 0.7.1 ***
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Regions.ini";	// *** V 0.7.1 ***
+
 
 	if (file_exists($filename2)) 
 		{//echo "Le fichier $filename2 existe.<br>";
@@ -187,38 +176,12 @@ if($_POST['cmd'])
 	$tableauIni = parse_ini_file($filename, true);
 	if($tableauIni == FALSE){echo 'prb lecture ini '.$filename.'<br>';}
 	$i=0;
-	echo '<b><u>Nb regions Max:</u> '.INI_Conf("0","NbAutorized").'  |  '.'<u>Nb regions connectes:</u> '.count($tableauIni).'</b><BR><br>';
-	
-	if(count($tableauIni) >= INI_Conf("0","NbAutorized"))
+	echo '<b><u>Nb regions Max:</u> 4  |  '.'<u>Nb regions connectes:</u> '.count($tableauIni).'</b><BR><br>';
+	if(count($tableauIni) >= 4)
 		{$btn = 'disabled';}else{$btn=$btnN3;}
 	if(INI_Conf("Parametre_OSMW","Autorized") == '1' )
 		{$btn = '';}
 	echo '<FORM METHOD=POST ACTION=""><INPUT TYPE="submit" VALUE="Ajouter" NAME="cmd" '.$btn.'> Permet d\'ajouter une nouvelle region au moteur Opensim.</FORM></center>';
-	
-	
-	// *** Lecture Fichier OpenSimDefaults ***
-		$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini";		//*** V 0.7.1
-	if (file_exists($filename2)) 
-		{//echo "Le fichier $filename2 existe.<br>";
-		$filename = $filename2 ;
-		}else {//echo "Le fichier $filename2 n'existe pas.<br>";
-		}
-
-	// **** Recuperation du port http du serveur ******		
-		if (!$fp = fopen($filename,"r")) 
-		{echo "Echec de l'ouverture du fichier ".$filename;}		
-		$tabfich=file($filename); 
-		for( $i = 1 ; $i < count($tabfich) ; $i++ )
-		{
-		$porthttp = strstr($tabfich[$i],"http_listener_port");
-			if($porthttp)
-			{
-				$posEgal = strpos($porthttp,'=');
-				$longueur = strlen($porthttp);
-				$srvOS = substr($porthttp, $posEgal + 1);
-			}
-		}
-		fclose($fp);
 	
 //******************************************************	
 	echo '<hr><table width="100%" BORDER=0><TR>';
@@ -228,10 +191,9 @@ if($_POST['cmd'])
 		echo '<tr>
 		<FORM METHOD=POST ACTION=""><INPUT TYPE = "hidden" NAME = "name_sim" VALUE="'.$key.'" >
 		<tr><td colspan=6><b><u>'.$key.'</u></b></td></tr>
-		<tr><td>Nom de la region</td><td>Coordonnes</td><td>Port Http Moteur Opensim</td><td>Port Http region</td><td>IP Public</td><td>Region UUID</td></tr>
+		<tr><td>Nom de la region</td><td>Coordonnes</td><td>Port Http region</td><td>IP Public</td><td>Region UUID</td></tr>
 		<tr><td><INPUT TYPE = "text" NAME = "NewName" VALUE = "'.$key.'" '.$btnN3.'></td>
 			<td><INPUT TYPE = "text" NAME = "Location" VALUE = "'.$tableauIni[$key]['Location'].'" '.$btnN3.'></td>
-			<td><INPUT TYPE = "text" NAME = "InternalPortMoteur" VALUE = "'.$srvOS.'" disabled></td>
 			<td><INPUT TYPE = "text" NAME = "InternalPort" VALUE = "'.$tableauIni[$key]['InternalPort'].'" '.$btnN3.'></td>
 			<td>'.$tableauIni[$key]['ExternalHostName'].'</td>
 			<td><INPUT TYPE = "text" NAME = "RegionUUID" VALUE = "'.$tableauIni[$key]['RegionUUID'].'" '.$btnN3.'></td>
@@ -249,16 +211,7 @@ if($_POST['cmd'])
 
 }else{header('Location: index.php');   }
 
-function exec_command($commande){
-	$output = shell_exec($commande);
-	return $output;
-}
 
-function GenUUID() {
-	return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-	mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
-	mt_rand( 0, 0x0fff ) | 0x4000,
-	mt_rand( 0, 0x3fff ) | 0x8000,
-	mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ) );
-}
+
+
 ?>

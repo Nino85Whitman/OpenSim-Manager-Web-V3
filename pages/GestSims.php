@@ -2,8 +2,7 @@
 include 'config/variables.php';
 
 
-if (session_is_registered("authentification"))
-{ // v&eacute;rification sur la session authentification 
+if (isset($_SESSION['authentification'])){ // v&eacute;rification sur la session authentification 
 if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<HR>';
 	$ligne1 = '<B>Gestion des Sims connectes.</B>';
@@ -118,7 +117,7 @@ if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo'</select><INPUT TYPE="submit" VALUE="Choisir" ></FORM></CENTER><hr>';
 	//**************************************************************************
 // *** Lecture Fichier Regions.ini ***
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	// *** V 0.7.1 ***
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	 
 	if (file_exists($filename2)) 
 		{//echo "Le fichier $filename2 existe.<br>";
 		$filename = $filename2 ;
@@ -128,7 +127,7 @@ if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	if($tableauIni == FALSE){echo 'prb lecture ini '.$filename.'<br>';}
 	
 // *** Lecture Fichier OpenSimDefaults ***
-		$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini";		//*** V 0.7.1
+		$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address").$FichierINIOpensim;		 
 	if (file_exists($filename2)) 
 		{//echo "Le fichier $filename2 existe.<br>";
 		$filename = $filename2 ;
@@ -174,7 +173,7 @@ if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 		echo '		<tr>
 		<td align=center><img src="'.$ImgMap.'" width=90 height=90 BORDER=1></td>
 		<td align=center><FORM METHOD=POST ACTION=""><center><b><u>'.$key.'</u></b>  - <a href="secondlife://hg.francogrid.org:80:'.$key.'">Se teleporter</a> -<br>Message pour la Sim.<br><INPUT TYPE="text" NAME="msg_alert" style="width:300px; height:25px;"><INPUT TYPE="submit" VALUE="Alerte" NAME="cmd" '.$btnN2.'><INPUT TYPE="hidden" VALUE="'.$key.'" NAME="name_sim"> </center></FORM></td>
-		<td align=center><img src="'.$Couleur_Feux.'" width=50 height=80 BORDER=1></td>
+		<td align=center><img src="'.$Couleur_Feux.'"BORDER=1></td>
 		</tr>';
 	}
 	echo '</table></center><hr>';

@@ -1,7 +1,7 @@
 <?php 
 include 'config/variables.php';
 
-if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
+if (isset($_SESSION['authentification']) && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
 	echo '<HR>';
 	$ligne1 = '<B>Configuration des INI d\'Opensim.</B>';
 	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.$_SESSION['opensim_select'].' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';
@@ -23,7 +23,7 @@ if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // 
 	$filename0a = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."ScreenSend";	
 	$filename0b = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."RunOpensim.sh";	
 	$filename1 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.ini";				
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini";
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address").$FichierINIOpensim;
 	$filename3 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."config-include/FlotsamCache.ini";	
 	$filename4 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."config-include/GridCommon.ini";
 	$filename5 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.log";
@@ -44,7 +44,7 @@ echo "<u><i><b>Choisir le fichier a modifier</b></i></u><br><br>";
 		{echo "Le fichier OpenSim.ini existe.<br>";$dispo = $dispo.'<input type="submit" name="affichage" value="OpenSim.ini">';}
 		else {echo "<B>Le fichier OpenSim.ini n'existe pas.</B><br>";}
 	if (file_exists($filename2))
-		{echo "Le fichier OpenSimDefaults.ini existe.<br>";$dispo = $dispo.'<input type="submit" name="affichage" value="OpenSimDefaults.ini">';}
+		{echo "Le fichier OpenSimDefaults.ini existe.<br>";$dispo = $dispo.'<input type="submit" name="affichage" value="'.$FichierINIOpensim.'">';}
 		else {echo "<B>Le fichier OpenSimDefaults.ini n'existe pas.</B><br>";}
 	if (file_exists($filename3))
 		{echo "Le fichier FlotsamCache.ini existe.<br>";$dispo = $dispo.'<input type="submit" name="affichage" value="FlotsamCache.ini">';}
@@ -75,7 +75,7 @@ echo "<u><i><b>Choisir le fichier a modifier</b></i></u><br><br>";
 	if ($_POST['affichage'] == "ScreenSend"){$fichier = $filename0a;}
 	if ($_POST['affichage'] == "RunOpensim.sh"){$fichier = $filename0b;}
 	if ($_POST['affichage'] == "OpenSim.ini"){$fichier = $filename1;}
-	if ($_POST['affichage'] == "OpenSimDefaults.ini"){$fichier = $filename2;}
+	if ($_POST['affichage'] == $FichierINIOpensim){$fichier = $filename2;}
 	if ($_POST['affichage'] == "FlotsamCache.ini"){$fichier = $filename3;}
 	if ($_POST['affichage'] == "GridCommon.ini"){$fichier = $filename4;}
 	if ($_POST['affichage'] == "OpenSim.log"){$fichier = $filename5;}

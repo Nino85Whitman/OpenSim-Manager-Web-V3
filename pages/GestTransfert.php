@@ -1,7 +1,7 @@
 <?php 
 include 'config/variables.php';
 
-if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
+if (isset($_SESSION['authentification']) && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
 	if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<HR>';
 	$ligne1 = '<B>Gestion du Transfert des sauvegardes pour les moteurs Opensim.</B>';
@@ -106,7 +106,7 @@ if($commande <> '')
 	
 		//**************************************************************************	
 	// *** Lecture Fichier Region.ini ***
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	// *** V 0.7.1 ***
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	 
 	if (file_exists($filename2)) 
 		{//echo "Le fichier $filename2 existe.<br>";
 		$filename = $filename2 ;
@@ -116,7 +116,7 @@ if($commande <> '')
 	if($tableauIni == FALSE){echo 'prb lecture ini $filename<br>';}
 	
 	// *** Lecture Fichier OpenSimDefaults ***
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini";		//*** V 0.7.1
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address").$FichierINIOpensim;		
 	if (file_exists($filename2)) 
 		{//echo "Le fichier $filename2 existe.<br>";
 		$filename = $filename2 ;

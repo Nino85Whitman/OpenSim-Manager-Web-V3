@@ -1,7 +1,7 @@
 <?php 
 include 'config/variables.php';
 
-if (session_is_registered("authentification")){ // v&eacute;rification sur la session authentification 
+if (isset($_SESSION['authentification'])){ // v&eacute;rification sur la session authentification 
 if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<HR>';
 	$ligne1 = '<B>Gestion des Terrains connectes.</B>';
@@ -114,7 +114,7 @@ if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	//**************************************************************************
 // *** Lecture Fichier Region.ini ***
 //	$filename1 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/Region.ini";	// *** V 0.6.9 ***
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	// *** V 0.7.1 ***
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."Regions/".$FichierINIRegions;	 
 	if (file_exists($filename1)) 
 		{//echo "Le fichier $filename1 existe.<br>";
 		$filename = $filename1 ;
@@ -130,8 +130,8 @@ if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	
 	
 // *** Lecture Fichier OpenSimDefaults.ini ***
-//	$filename1 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.ini";				//*** V 0.6.9
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSimDefaults.ini";		//*** V 0.7.1
+
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address").$FichierINIOpensim;		
 	if (file_exists($filename1)) 
 		{//echo "Le fichier $filename1 existe.<br>";
 		$filename = $filename1 ;

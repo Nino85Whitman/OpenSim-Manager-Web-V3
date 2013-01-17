@@ -1,6 +1,5 @@
 <?php 
-if (session_is_registered("authentification"))
-{ // v&eacute;rification sur la session authentification 
+if (isset($_SESSION['authentification'])){ // v&eacute;rification sur la session authentification 
 	echo '<HR>';
 	$ligne1 = '<B>A Propos de OpenSim Manager Web.</B>';
 	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.INI_Conf_Moteur($_SESSION['opensim_select'],"name").' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';

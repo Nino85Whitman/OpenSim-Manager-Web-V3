@@ -2,7 +2,7 @@
 include 'config/variables.php';
 
 
-if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
+if (isset($_SESSION['authentification']) && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
 	echo '<HR>';
 	$ligne1 = '<B>Gestion des Utilisateurs de OpenSim Manager Web.</B>';
 	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.$_SESSION['opensim_select'].' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';

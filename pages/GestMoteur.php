@@ -1,7 +1,8 @@
 <?php 
-include 'config/variables.php';
+//include 'config/variables.php';
 
-if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
+
+if (isset($_SESSION['authentification']) && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
 	echo '<HR>';
 	$ligne1 = '<B>Configuration des Moteurs Opensim connectes.</B>';
 	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.$_SESSION['opensim_select'].' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';
@@ -85,11 +86,5 @@ if($_POST['cmd'])
 //******************************************************	
 
 }else{header('Location: index.php');   }
-
-function exec_command($commande){
-	$output = shell_exec($commande);
-	return $output;
-}
-
 
 ?>

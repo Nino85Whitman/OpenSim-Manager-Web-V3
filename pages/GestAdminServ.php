@@ -1,7 +1,7 @@
 <?php 
 include 'config/variables.php';
 
-if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
+if (isset($_SESSION['authentification']) && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
 	if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<HR>';
 	$ligne1 = '<B>Page Administration de tous les Moteurs pour ce serveur.</B>';
@@ -141,8 +141,8 @@ if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // 
 				echo "********************************<br>";
 				
 				// *** Fichier PRESENT Fichier OpenSimDefaults.ini ***
-				$tableauIniOS = parse_ini_file(INI_Conf_Moteur($key,"address")."OpenSimDefaults.ini", true);
-				if($tableauIni == FALSE){echo 'prb lecture ini '.$data["address"]."OpenSimDefaults.ini".'<br>';}else {echo 'Fichier PRESENT OpenSimDefaults.ini OK<br>';}
+				$tableauIniOS = parse_ini_file(INI_Conf_Moteur($key,"address").$FichierINIOpensim, true);
+				if($tableauIni == FALSE){echo 'prb lecture ini '.$data["address"].$FichierINIOpensim.'<br>';}else {echo 'Fichier PRESENT OpenSimDefaults.ini OK<br>';}
 				echo "********************************<br>";
 				
 				// *** Fichier PRESENT Fichier RunOpensim.sh ***

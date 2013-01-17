@@ -44,7 +44,7 @@ for($x=-30;$x < 30;$x++) 		// Limite de 50x50
 		while (list($keyi, $vali) = each($tableauIni))
 		{
 			// **** Recuperation du port http du serveur ******		
-			$filename = $data['address']."OpenSimDefaults.ini";		
+			$filename = $data['address'].$FichierINIOpensim;		
 			if (!$fp = fopen($filename,"r")){echo "Echec de l'ouverture du fichier ".$filename;}		
 				$tabfich=file($filename); 
 				for( $i = 1 ; $i < count($tabfich) ; $i++ )

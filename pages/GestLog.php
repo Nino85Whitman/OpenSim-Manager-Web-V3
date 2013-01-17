@@ -2,7 +2,7 @@
 <?php 
 include 'config/variables.php';
 
-if (session_is_registered("authentification")){ // v&eacute;rification sur la session authentification 
+if (isset($_SESSION['authentification'])){ // v&eacute;rification sur la session authentification 
 if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<HR>';
 	$ligne1 = '<B>Gestion du Fichier Log.</B>';

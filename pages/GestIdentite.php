@@ -2,7 +2,7 @@
 include 'config/variables.php';
 
 
-if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
+if (isset($_SESSION['authentification']) && $_SESSION['privilege']>=3){ // v&eacute;rification sur la session authentification 
 	echo '<HR>';
 	$ligne1 = '<B>Gestion Identit&eacute du Serveur.</B>';
 	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.$_SESSION['opensim_select'].' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';
@@ -79,7 +79,7 @@ if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // 
 			{
 				//echo '<hr>Serveur Name:'.$server[$key]['name'].'<br>'; 
 				// *** Lecture Fichier OpenSimDefaults.ini *** 
-				$filename2 = $data["address"]."OpenSimDefaults.ini";		
+				$filename2 = $data["address"].$FichierINIOpensim;		
 				if (file_exists($filename2)) {$filename = $filename2 ;	}
 
 				// **** Recuperation du port http du serveur ******		
@@ -94,7 +94,7 @@ if (session_is_registered("authentification") && $_SESSION['privilege']>=3){ // 
 				fclose($fp);
 				
 				 // *** Lecture Fichier Regions.ini ***
-				$filename2 = $data["address"]."Regions/".$FichierINIRegions;	// *** V 0.7.1 ***
+				$filename2 = $data["address"]."Regions/".$FichierINIRegions;	 
 				if (file_exists($filename2)) 
 					{$filename = $filename2 ;}
 				$tableauIni = parse_ini_file($filename, true);

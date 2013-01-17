@@ -2,29 +2,31 @@
 
 include 'config/osmw_conf.php';
 
+//******************************************************
+// *******   Noms des fichiers INI 
+//******************************************************
+$FichierINIRegions = "Regions.ini";				// ou RegionConfig.ini
+$FichierINIOpensim = "OpenSimDefaults.ini";  	// ou OpenSim.ini
+$FichierLOGOpensim = "OpenSim.log";				// ou OpenSim.32BitLaunch.log pour les version 64 bits
 
-//******************************************************
-// *******   CONSTANTES 
-//******************************************************
 $Couleur_Feux_V = "images/Feux_Vert.jpg";
-$Couleur_Feux_O = "images/Feux_Orange.jpg";
 $Couleur_Feux_R = "images/Feux_Rouge.jpg";
 
-$FichierINIRegions = "Regions.ini";
+//********************************************************************************
+//******* 								NE PAS TOUCHER A PARTIR D'ICI				
+//********************************************************************************
 //******************************************************
-// PARAMETRAGE DES COMMANDES DISPONIBLE POUR OSMANAGERWEB 
+// PARAMETRAGE DE LA PRE-COMMANDE POUR OSMANAGERWEB 
 //******************************************************
 $pre_cmd = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";./ScreenSend ".$_SESSION['opensim_select']." ";	// commande de base 
-
-//***************************************
+//******************************************************
+// *******   COMMANDES DISPONIBLE POUR OSMANAGERWEB  
+//******************************************************
 $cmd_OS_force_update = $pre_cmd."force update"; 
- 
-	
 $cmd_OS_stop = $pre_cmd."shutdown"; 
 $cmd_OS_restart = $pre_cmd."restart"; 
 $cmd_OS_save_iar = $pre_cmd."save iar ";
 $cmd_OS_region_root = $pre_cmd."change region root"; 
-
 $cmd_SYS_start = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";./RunOpensim.sh"; 
 $cmd_SYS_etat_OS = "ps -e |grep mono";
 $cmd_SYS_etat_OS2 = "screen -list";
@@ -34,6 +36,7 @@ $cmd_SYS_Delete_log64 = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"addre
 $cmd_SYS_Delete_file = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";chmod 777 ";
 $cmd_SYS_Delete_Xlog = "cd ".INI_Conf_Moteur($_SESSION['opensim_select'],"address").";chmod 777 XEngine.log;rm XEngine.log";
 //*************************************************************************************
+
 
 $MENU_LATTERALE = '<center><div id="menu"><ul>
 		<li><a href="./" title="Page d\'accueil"><span>Accueil</span></a></li>
@@ -47,7 +50,6 @@ $MENU_LATTERALE = '<center><div id="menu"><ul>
 		<li><a href="?a=14" title="Qui a participe au projet OSMW"><span>A Propos</span></a></li>
 		<li><a href="?a=13" title="Une question, ici peut etre la reponse !"><span>Aide</span></a></li>
 	</ul></div></center>';
-
 $PIED_DE_PAGE = '<hr><center>'.INI_Conf($_SESSION['opensim_select'],"VersionOSMW").'</center>';
 ?>
 
