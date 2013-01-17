@@ -2,5 +2,5 @@
 Configuration requise pour OSWebManager:
 *******************************************
 Creer la table MYSQL en important le fichier OSMW.sql
-Configurer le fichier config/osmw_conf.php avec vos parametres de serveurs
+Renommer osmw_conf.ph_ en osmw_conf.php et configurer le avec vos parametres de serveurs
 Mettre les droits 777 /files

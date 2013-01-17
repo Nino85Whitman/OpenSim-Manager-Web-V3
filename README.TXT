@@ -19,8 +19,9 @@ Gestion des Utilisateurs:
 ******************************************
 ********* Suivi de versions **********
 ******************************************
-*** V 4 Final *** En cours
--- Systeme d'installation intégrés
+*** V 4 Beta *** En cours
+-- Mise à jours des SESSION
+-- Systeme d'installation intégrés **
 -- ...
 -------------------------------------------------------
 *** V 3.2 Final ***

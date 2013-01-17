@@ -3,7 +3,6 @@
 -- http://www.phpmyadmin.net
 --
 -- Serveur: localhost
--- Généré le : Sam 11 Août 2012 à 14:40
 -- Version du serveur: 5.1.63
 -- Version de PHP: 5.3.2-1ubuntu4.17
 
