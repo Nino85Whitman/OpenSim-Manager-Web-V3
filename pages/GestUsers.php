@@ -46,8 +46,8 @@ if($_POST['cmd'])
 			echo '<FORM METHOD=POST ACTION=""><table width="100%" BORDER=0>
 			<TR>
 				<td>Privilége:<br><select name="username_priv"><option value="1">Invité - Privé</option><option value="2">Gestionnaire</option><option value="3" >Administrateur</option></select></td>
-				<td>Nom de l\'utilisateur:<br> <INPUT TYPE = "text" NAME = "NewFirstName" VALUE = "Nom" '.$btnN3.'></td>
-				<td>Prénom de l\'utilisateur:<br> <INPUT TYPE = "text" NAME = "NewLastName" VALUE = "Prénom" '.$btnN3.'></td>
+				<td>Prénom de l\'utilisateur:<br> <INPUT TYPE = "text" NAME = "NewFirstName" VALUE = "Prénom" '.$btnN3.'></td>
+				<td>Nom de l\'utilisateur:<br> <INPUT TYPE = "text" NAME = "NewLastName" VALUE = "Nom" '.$btnN3.'></td>
 				<td>Mot de passe:<br> <INPUT TYPE = "password" NAME = "username_pass" VALUE = "" '.$btnN3.'></td>
 			</tr><tr>';
 				$sql = 'SELECT * FROM moteurs';

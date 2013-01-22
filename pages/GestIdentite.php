@@ -196,7 +196,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>=3){ // v&eac
 			</tr>
 			<tr>
 				<td><u>Lien Web:</u></td>
-				<td><INPUT TYPE="text" VALUE="'.$content4.'" NAME="LibWeb"><b> <a href="'.$content4.'" target=_blank>'.$content4.'</a></b></td>
+				<td><b> <a href="'.$content4.'" target=_blank>'.$content4.'</a></b><br><INPUT TYPE="text" VALUE="'.$content4.'" NAME="LibWeb"></td>
 			</tr>
 			<tr><td align=right><INPUT TYPE="checkbox" NAME="EnregListing" '.$content6.'></td><td> Enregistrer le serveur au Listing de Francogrid. (recommand&eacute;)</td></tr>
 			<tr><td colspan=2><INPUT TYPE="submit" VALUE="ENREGISTRER MODIFICATION" NAME="cmd" '.$btnN3.'></td></tr>
