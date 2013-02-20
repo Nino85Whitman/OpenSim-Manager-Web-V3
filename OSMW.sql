@@ -48,7 +48,6 @@ INSERT INTO `conf` (`id`, `cheminAppli`, `destinataire`, `Autorized`, `NbAutoriz
 --
 -- Structure de la table `moteurs`
 --
-
 CREATE TABLE IF NOT EXISTS `moteurs` (
   `osAutorise` tinyint(4) NOT NULL AUTO_INCREMENT,
   `id_os` varchar(50) NOT NULL,
@@ -56,18 +55,20 @@ CREATE TABLE IF NOT EXISTS `moteurs` (
   `version` varchar(50) NOT NULL,
   `address` varchar(50) NOT NULL,
   `DB_OS` varchar(50) NOT NULL,
+  `hypergrid` varchar(100) NOT NULL,
   PRIMARY KEY (`osAutorise`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
 
 --
 -- Contenu de la table `moteurs`
 --
 
-INSERT INTO `moteurs` (`osAutorise`, `id_os`, `name`, `version`, `address`, `DB_OS`) VALUES
-(1, 'Opensim_1', 'Opensim_1', 'Private-Land', '/home/Opensim/Opensim-0.7.1-Sim1/', 'BDD_Opensim1'),
-(2, 'Opensim_2', 'Opensim_2', 'Public-Land', '/home/Opensim/Opensim-0.7.1-Sim2/', 'BDD_Opensim2'),
-(3, 'Opensim_3', 'Opensim_3', 'City', '/home/Opensim/Opensim-0.7.1-Sim3/', 'BDD_Opensim3'),
-(4, 'Opensim_4', 'Opensim_4', 'Parc Attraction', '/home/Opensim/Opensim-0.7.1-Sim4/', 'BDD_Opensim4');
+INSERT INTO `moteurs` (`osAutorise`, `id_os`, `name`, `version`, `address`, `DB_OS`, `hypergrid`) VALUES
+(1, 'Opensim_1', 'Opensim_1', 'Nino-Private-Land', '/home/fgagod/Opensim-0.7.1-Sim1/', 'BDD_Opensim1', 'hg.francogrid.org:80'),
+(2, 'Opensim_2', 'Opensim_2', 'Nino-Public-Land', '/home/fgagod/Opensim-0.7.1-Sim2/', 'BDD_Opensim2', 'hg.francogrid.org:80'),
+(3, 'Opensim_3', 'Opensim_3', 'NinoCity', '/home/fgagod/Opensim-0.7.1-Sim3/', 'BDD_Opensim3', 'hg.francogrid.org:80'),
+(4, 'Opensim_4', 'Opensim_4', 'Parc Attraction', '/home/fgagod/Opensim-0.7.1-Sim4/', 'BDD_Opensim4', 'hg.francogrid.org:80'),
+(16, 'Opensim_Beta', 'Opensim_Beta', 'Opensim FG-Beta', '/home/fgagod/opensim-0.7.5-rc1-source/bin/', 'BDD_Opensim_beta', 'hg.beta.francogrid.org:8002');
 
 -- --------------------------------------------------------
 
@@ -82,6 +83,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `privilege` int(11) NOT NULL,
   `osAutorise` varchar(50) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
 
 --
 -- Contenu de la table `users`

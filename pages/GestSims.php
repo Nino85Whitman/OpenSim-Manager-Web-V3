@@ -108,9 +108,10 @@ if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
 	echo '<CENTER><FORM METHOD=POST ACTION="">
 		<select name="OSSelect">';
+	$hypergrid = "";
 	while($data = mysql_fetch_assoc($req))
 		{$sel="";
-		 if($data['id_os'] == $_SESSION['opensim_select']){$sel="selected";}
+		 if($data['id_os'] == $_SESSION['opensim_select']){$sel="selected";$hypergrid = $data['hypergrid'];}
 			echo '<option value="'.$data['id_os'].'" '.$sel.'>'.$data['name'].' - '.$data['version'].'</option>';
 		}
 	mysql_close();	
@@ -162,7 +163,6 @@ if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 	echo '<tr><td colspan=6 align=center><FORM METHOD=POST ACTION="">Message pour TOUTES les Sims<br><INPUT TYPE="text" NAME="msg_alert"  style="width:300px; height:25px;"><INPUT TYPE="submit" VALUE="Alerte General" NAME="cmd" '.$btnN2.'><INPUT TYPE="hidden" VALUE="'.$key.'" NAME="name_sim"></FORM></td></tr>';
 	echo '</TABLE>';
 	echo '<HR>';	
-
 	echo '<center><table width="60%" BORDER=1>';
 	while (list($key, $val) = each($tableauIni))
 	{
@@ -170,9 +170,11 @@ if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 			$ImgMap = "http://".$hostnameSSH.":".trim($srvOS)."/index.php?method=regionImage".str_replace("-","",$tableauIni[$key]['RegionUUID']);
 		//******************************************************
 		if(Test_Url($ImgMap) <> '1'){$Couleur_Feux = $Couleur_Feux_R;}else{$Couleur_Feux = $Couleur_Feux_V;}
-		echo '		<tr>
+		
+		echo '<tr>
 		<td align=center><img src="'.$ImgMap.'" width=90 height=90 BORDER=1></td>
-		<td align=center><FORM METHOD=POST ACTION=""><center><b><u>'.$key.'</u></b>  - <a href="secondlife://hg.francogrid.org:80:'.$key.'">Se teleporter</a> -<br>Message pour la Sim.<br><INPUT TYPE="text" NAME="msg_alert" style="width:300px; height:25px;"><INPUT TYPE="submit" VALUE="Alerte" NAME="cmd" '.$btnN2.'><INPUT TYPE="hidden" VALUE="'.$key.'" NAME="name_sim"> </center></FORM></td>
+		<td align=center><FORM METHOD=POST ACTION=""><center><b><u>'.$key.'</u></b>  - <a href="secondlife://'.$hypergrid.":".$key.'">Se teleporter</a> -<br>Message pour la Sim.<br>
+		<INPUT TYPE="text" NAME="msg_alert" style="width:300px; height:25px;"><INPUT TYPE="submit" VALUE="Alerte" NAME="cmd" '.$btnN2.'><INPUT TYPE="hidden" VALUE="'.$key.'" NAME="name_sim"> </center></FORM></td>
 		<td align=center><img src="'.$Couleur_Feux.'"BORDER=1></td>
 		</tr>';
 	}
@@ -182,20 +184,4 @@ if($_POST['OSSelect']){$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
 }else{header('Location: index.php');   }
 
 
-function Test_Url($server)
-{
-// Temps avant expiration du test de connexion 
-define('TIMEOUT', 30); 
- 
-	$tab = parse_url($server); 
-	$tab['port'] = isset($tab['port']) ? $tab['port'] : 80; 
-	if(false !== ($fp = fsockopen($tab['host'], $tab['port'], $errno, $errstr, TIMEOUT))) { 
-		fclose($fp); 
-		//echo 'Location: ' . $server; 
-		return 1;
-	} else { 
-		echo 'Erreur #' . $errno . ' : ' . $errstr; 
-		return 0;
-	} 
-}
 ?>

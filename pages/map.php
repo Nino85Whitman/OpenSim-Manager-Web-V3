@@ -19,28 +19,25 @@ for($x=-30;$x < 30;$x++) 		// Limite de 50x50
 		$Matrice[$x][$y]['ip']="";
 		$Matrice[$x][$y]['port']="";	
 		$Matrice[$x][$y]['uuid']="";
+		$Matrice[$coordX][$coordY]['hypergrid']="";
 	} 
 } 
-//*******************************************************
-
-	
 //*******************************************************	
 // Lecture des regions.ini et enregistrement dans Matrice
 //*******************************************************
 // Parcours des serveur installes
-
 	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
 	mysql_select_db($database,$db);
 	$sql = 'SELECT * FROM moteurs';
 	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+	$hypergrid = "";
+	echo "<table width=100% border=0 cellspacing=0 cellpadding=0 >";
 	while($data = mysql_fetch_assoc($req))
 	{
-		//*******************************************************
-		//*******************************************************
+		$hypergrid = $data['hypergrid'];$i=0;
 		// Pour chaque serveur
 		$tableauIni = parse_ini_file($data['address']."Regions/".$FichierINIRegions, true);
 		if($tableauIni == FALSE){echo 'prb lecture ini '.$data['address']."Regions/".$FichierINIRegions.'<br>';}
-	//	echo '<hr>Serveur Name:'.$data['name'].' - Version:'.$data['version'].'<br>';
 		while (list($keyi, $vali) = each($tableauIni))
 		{
 			// **** Recuperation du port http du serveur ******		
@@ -49,35 +46,31 @@ for($x=-30;$x < 30;$x++) 		// Limite de 50x50
 				$tabfich=file($filename); 
 				for( $i = 1 ; $i < count($tabfich) ; $i++ )
 				{
-				//echo $tabfich[$i]."</br>";
 				$porthttp = strstr($tabfich[$i],"http_listener_port");
-					if($porthttp)
-					{
-						$posEgal = strpos($porthttp,'=');
-						$longueur = strlen($porthttp);
-						$srvOS = substr($porthttp, $posEgal + 1);
-					}
+				if($porthttp){$posEgal = strpos($porthttp,'=');$longueur = strlen($porthttp);$srvOS = substr($porthttp, $posEgal + 1);}
 				}
 				fclose($fp);
-			//****************************************************	
-	
+			//****************************************************		
+			
+
 			//*******************************************************
 			// Recuperation des valeurs ET enregistrement des valeurs dans le tableau
 			//echo $key.$tableauIni[$key]['RegionUUID'].$tableauIni[$key]['Location'].$tableauIni[$key]['InternalPort'].'<br>';
-			$location = explode(",", $tableauIni[$keyi]['Location']);
+			
+			 $ImgMap = "http://".$tableauIni[$keyi]['ExternalHostName'].":".trim($srvOS)."/index.php?method=regionImage".str_replace("-","",$tableauIni[$keyi]['RegionUUID']);
+		 
+			 $location = explode(",", $tableauIni[$keyi]['Location']);
 			 $coordX = $location[0]-7000;
 			 $coordY = $location[1]-7000;		
-			 $Matrice[$coordX][$coordY]['name']=$keyi;	
-			 $ImgMap = "http://".$tableauIni[$keyi]['ExternalHostName'].":".trim($srvOS)."/index.php?method=regionImage".str_replace("-","",$tableauIni[$keyi]['RegionUUID']);
+			 $Matrice[$coordX][$coordY]['name']=$keyi;			 
+			 $Matrice[$coordX][$coordY]['hypergrid']=$hypergrid;
 			 $Matrice[$coordX][$coordY]['img'] = $ImgMap ;
 			 $Matrice[$coordX][$coordY]['ip']=$tableauIni[$keyi]['ExternalHostName'];
 			 $Matrice[$coordX][$coordY]['port']=$tableauIni[$keyi]['InternalPort'];	
 			 $Matrice[$coordX][$coordY]['uuid']=$key.$tableauIni[$keyi]['RegionUUID'];
 		}
 		//*******************************************************
-		//*******************************************************
 	}
-	
 mysql_close();
 	
 //*******************************************************	
@@ -92,13 +85,10 @@ else{$widthMap = "64";$heightMap= "64";  // Par default si pas zoom
 echo '<table border=0 align=center WIDTH=100%><tr align=center><td>
 <FORM METHOD=POST ACTION="">
 	<select name="zooming">
-	  <option value="32" name="id">Zoom 1</option>
-	  <option value="64" name="id">Zoom 2</option>
-	  <option value="128" name="id">Zoom 3</option>
-	  <option value="256" name="id">Zoom 4</option>
-	</select><input type="submit" name="goto" value="Appliquer Zoom">
+	<option value="4" name="id">Zoom -2</option><option value="8" name="id">Zoom -1</option><option value="16" name="id">Zoom 0</option>
+	<option value="32" name="id">Zoom 1</option><option value="64" name="id" selected>Zoom 2</option><option value="128" name="id">Zoom 3</option>
+	<option value="256" name="id">Zoom 4</option><option value="512" name="id">Zoom 5</option></select><input type="submit" name="goto" value="Appliquer Zoom">
 </form></td></tr></table>
-
 <table border=0 align=center><tr align=center>';
 
 for($y=30;$y > -30;$y--) 		// Limite Y
@@ -107,21 +97,16 @@ for($y=30;$y > -30;$y--) 		// Limite Y
 	for($x=-30;$x < 30;$x++) 			// Limite X
 	{
 		echo '<td>';
-		//ECHO '<font-size: 6pt>'.$Matrice[$x][$y]['name'].'<BR>x:'.$x.' y:'.$y.'<br></font>';
-		//echo $Matrice[$x][$y]['name'].'<br>';	
-		//echo $Matrice[$x][$y]['img'];
 		if(Test_Url($Matrice[$x][$y]['img']) <> '1')
 		{
-			echo	$textemap = $Matrice[$x][$y]['name'];
+			echo $textemap = $Matrice[$x][$y]['name'];
 		}
 		else
 		{
 			$textemap = $Matrice[$x][$y]['name'];
 			echo '<img src="'.$Matrice[$x][$y]['img'].'" width="'.$widthMap.'" height="'.$heightMap.'" BORDER="0" alt="'.$textemap.'">';
+//			echo '<a href="secondlife://'.$Matrice[$coordX][$coordY]['hypergrid'].':'.$Matrice[$x][$y]['name'].'"><img src="'.$Matrice[$x][$y]['img'].'" width="'.$widthMap.'" height="'.$heightMap.'" BORDER="0" alt="'.$textemap.'"></a>';
 		}
-		// $Matrice[$x][$y]['ip'];
-		// $Matrice[$x][$y]['port'];	
-		// $Matrice[$x][$y]['uuid']
 		echo "</td>";
 	} 
 	echo '</tr>';
@@ -129,20 +114,4 @@ for($y=30;$y > -30;$y--) 		// Limite Y
 echo "</table>";
 //*******************************************
 
-function Test_Url($server)
-{
-// Temps avant expiration du test de connexion 
-define('TIMEOUT', 10); 
- 
-	$tab = parse_url($server); 
-	$tab['port'] = isset($tab['port']) ? $tab['port'] : 40; 
-	if(false !== ($fp = fsockopen($tab['host'], $tab['port'], $errno, $errstr, TIMEOUT))) { 
-		fclose($fp); 
-		//echo 'Location: ' . $server; 
-		return 1;
-	} else { 
-		//echo 'Erreur #' . $errno . ' : ' . $errstr; 
-		return 0;
-	} 
-}
 ?>

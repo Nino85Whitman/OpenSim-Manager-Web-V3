@@ -82,28 +82,28 @@ if (isset($_SESSION['authentification'])){ // vérification sur la session authen
 		if($_POST['a']){$vers = $_POST['a'];}
 		if($_GET['a']){$vers = $_GET['a'];}
 			//***************************************************************************
-			//**************		V3 = Configuration par Base de donnée + SECU MOTEURS SUR PROFIL NIV 1
 			// 	 				index.php																				
-			if($vers =="1"){include('pages/GestSims.php');}								// V3	# Gestion sim
-			if($vers =="2"){include('pages/GestSaveRestore.php');}						// V3	# Gestion backup sim
-			if($vers =="3"){include('pages/GestTerrain.php');}							// V3	# Gestion Terrain
-			if($vers =="4"){include('pages/GestImportExport.php');}  					// V3 	# Exporter un inventaire
-			if($vers =="5"){include('pages/GestOpensim.php');}			// admin		// V3	# Edition des fichiers de conf Opensim propre au moteur
-			if($vers =="6"){include('pages/GestRegion.php');}			// admin		// V3	# Gestion des Regions par moteur
-			if($vers =="7"){include('pages/GestLog.php');}								// V3	# Gestion du Log
-			if($vers =="8"){include('pages/GestAdminServ.php');}		// admin		// V3	# Gestion du serveur
-			if($vers =="9"){include('pages/contact.php');}								// V3	# Helpdesk Utilisateur
-			if($vers =="10"){include('pages/GestDirectory.php');}						// V3	# Gestion des Fichiers
-			if($vers =="11"){include('pages/map.php');}									// V3	# MAP
-			if($vers =="12"){include('pages/GestIdentite.php');}		// admin		// V3	#Connection a Admin Grille OSMW 
-			if($vers =="13"){include('pages/Aide.php');}  								// V3	# Aide
-			if($vers =="14"){include('pages/Apropos.php');}  							// V3	# Les remerciements
-			if($vers =="15"){include('pages/GestUsers.php');}			// admin		// V3	# Gestion des utilisateurs
-			if($vers =="16"){include('pages/GestBackup.php');}			// admin		// V3	# Gestion des sauvegardes
-			if($vers =="17"){include('pages/GestMoteur.php');}			// admin		// V3	# Gestion des moteurs
-			if($vers =="18"){include('pages/GestConfig.php');}			// admin		// V3	# Configuration de OSMW
-		//	if($vers =="19"){include('GestXMLRPC.php');}				// admin		// V**			experimental
-			if($vers =="20"){include('pages/GestTransfert.php');}		// admin		// V3	# Permet le transfert de fichier 
+			if($vers =="1"){include('pages/GestSims.php');}								// 	# Gestion sim
+			if($vers =="2"){include('pages/GestSaveRestore.php');}						// 	# Gestion backup sim
+			if($vers =="3"){include('pages/GestTerrain.php');}							// 	# Gestion Terrain
+			if($vers =="4"){include('pages/GestImportExport.php');}  					//  # Exporter un inventaire
+			if($vers =="5"){include('pages/GestOpensim.php');}			// admin		// 	# Edition des fichiers de conf Opensim propre au moteur
+			if($vers =="6"){include('pages/GestRegion.php');}			// admin		// 	# Gestion des Regions par moteur
+			if($vers =="7"){include('pages/GestLog.php');}								// 	# Gestion du Log
+			if($vers =="8"){include('pages/GestAdminServ.php');}		// admin		// 	# Gestion du serveur
+			if($vers =="9"){include('pages/contact.php');}								// 	# Helpdesk Utilisateur
+			if($vers =="10"){include('pages/GestDirectory.php');}						// 	# Gestion des Fichiers
+			if($vers =="11"){include('pages/map.php');}									// 	# MAP
+			if($vers =="12"){include('pages/GestIdentite.php');}		// admin		// 	# Connection a Admin Grille OSMW 
+			if($vers =="13"){include('pages/Aide.php');}  								// 	# Aide
+			if($vers =="14"){include('pages/Apropos.php');}  							// 	# Les remerciements
+			if($vers =="15"){include('pages/GestUsers.php');}			// admin		// 	# Gestion des utilisateurs
+			if($vers =="16"){include('pages/GestBackup.php');}			// admin		// 	# Gestion des sauvegardes
+			if($vers =="17"){include('pages/GestMoteur.php');}			// admin		// 	# Gestion des moteurs
+			if($vers =="18"){include('pages/GestConfig.php');}			// admin		// 	# Configuration de OSMW
+		//	if($vers =="19"){include('GestXMLRPC.php');}				// admin		//	#	experimental
+			if($vers =="20"){include('pages/GestTransfert.php');}		// admin		// 	# Permet le transfert de fichier 
+			if($vers =="21"){include('pages/GestHypergrid.php');}						// 	# Gestion des liens Hypergrid
 			if($vers =="logout"){session_start();$_SESSION = array();session_destroy();session_unset();header('Location: index.php');  }	
 	}
 	else
@@ -157,7 +157,8 @@ if (isset($_SESSION['authentification'])){ // vérification sur la session authen
 	echo '<HR>';
 	echo '<center>';
 	echo '<div class="block" id="clean-gray"><button>Section Utilisateur</button></div><br>';
-	echo '<div class="block" id="pale-blue"><a href="?a=1"><button>Gestion des Sims.</button></a></div>';		
+	echo '<a href="?a=1"><div class="block" id="pale-blue"><button>Gestion des Sims.</button></div></a>';	
+	echo '<div class="block" id="pale-blue"><a href="?a=21"><button>Raccourcis Hypergrid.</button></a></div>';	
 	echo '<div class="block" id="pale-blue"><a href="?a=2"><button>Gestion des Sauvegardes.</button></a></div>';		
 	echo '<div class="block" id="pale-blue"><a href="?a=3"><button>Gestion des Terrains.</button></a></div>';		
 	echo '<div class="block" id="pale-blue"><a href="?a=10"><button>Gestion des fichiers de sauvegardes.</button></a></div>';		

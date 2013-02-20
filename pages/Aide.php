@@ -2,7 +2,9 @@
 if (isset($_SESSION['authentification'])){ // v&eacute;rification sur la session authentification 
 	echo '<HR>';
 	$ligne1 = '<B>Aide sur OpenSim Manager Web.</B>';
-	$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.INI_Conf_Moteur($_SESSION['opensim_select'],"name").' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';
+	//$ligne2 = '*** <u>Moteur OpenSim selectionne: </u>'.INI_Conf_Moteur($_SESSION['opensim_select'],"name").' - '.INI_Conf_Moteur($_SESSION['opensim_select'],"version").' ***';
+	
+	$ligne2 = '';
 	echo '<div class="block" id="clean-gray"><button><CENTER>'.$ligne1.'<br>'.$ligne2.'</CENTER></button></div>';
 	echo '<hr>';
 
@@ -14,21 +16,11 @@ if (isset($_SESSION['authentification'])){ // v&eacute;rification sur la session
 	if( $_SESSION['privilege']==1){$btnN1="";}							//	Niv 1
 	//******************************************************
 
-	if (!$fp = fopen("README.TXT","r")) {
-echo "Echec de l'ouverture du fichier";
-exit;
-}
-else {
-	while(!feof($fp)) {
-	// On récupère une ligne
-		$Ligne = fgets($fp,255);
-	// On affiche la ligne
-		echo $Ligne.'<br>';
-	// On stocke l'ensemble des lignes dans une variable
-		$Fichier .= $Ligne;
-	}
-	fclose($fp); // On ferme le fichier
-}
+	
+echo '<center><b><a href="?a=13&hp=fr">FR<a> | <a href="?a=13&hp=en">EN</a></b><br>';
+if($_GET['hp']== "fr"){echo '<iframe src="http://www.fgagod.net/HELP_OSMW-fr.pdf" width="90%" height="100%" >';}
+if($_GET['hp']== "en"){echo '<iframe src="http://www.fgagod.net/HELP_OSMW-en.pdf" width="80%" height="100%" >';}
+echo '</center>';
 	
 //******************************************************				
 }else{header('Location: index.php');   }

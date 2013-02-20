@@ -414,19 +414,19 @@ $i=0;
 			else {echo "<B>Le fichier GridCommon.ini n'existe pas.</B><br>";}
 		if (file_exists($filename5))
 			{echo '<input type="checkbox" name="matrice[]" value="OpenSim.log" > Le fichier OpenSim.log existe. <br>';}
-			else {echo "<B>Le fichier OpenSim.log n'existe pas.</B><br>";}
+		//	else {echo "<B>Le fichier OpenSim.log n'existe pas.</B><br>";}
 		if (file_exists($filename6))
 			{echo '<input type="checkbox" name="matrice[]" value="OpenSim.32BitLaunch.log" > Le fichier OpenSim.32BitLaunch.log existe. <br>';}
-			else {echo "<B>Le fichier OpenSim.32BitLaunch.log n'existe pas.</B><br>";}
+		//	else {echo "<B>Le fichier OpenSim.32BitLaunch.log n'existe pas.</B><br>";}
 		if (file_exists($filename7))
 			{echo '<input type="checkbox" name="matrice[]" value="startuplogo.txt" checked > Le fichier startuplogo.txt existe. <br>';}
-			else {echo "<B>Le fichier startuplogo.txt n'existe pas.</B><br>";}
+		//	else {echo "<B>Le fichier startuplogo.txt n'existe pas.</B><br>";}
 		if (file_exists($filename8))
 			{echo '<input type="checkbox" name="matrice[]" value="startup_commands.txt" checked > Le fichier startup_commands.txt existe. <br>';}
-			else {echo "<B>Le fichier startup_commands.txt n'existe pas.</B><br>";}
+		//	else {echo "<B>Le fichier startup_commands.txt n'existe pas.</B><br>";}
 		if (file_exists($filename9))
 			{echo '<input type="checkbox" name="matrice[]" value="shutdown_commands.txt" checked > Le fichier shutdown_commands.txt existe. <br>';}
-			else {echo "<B>Le fichier shutdown_commands.txt n'existe pas.</B><br>";}		
+		//	else {echo "<B>Le fichier shutdown_commands.txt n'existe pas.</B><br>";}		
 		//******************************************************		
 
 		//******************************************************

@@ -1,5 +1,4 @@
 <?php 
-
 //*************************************************************************************
 function ExtractValeur($chaine){
 	$posEgal = strpos($chaine,';');
@@ -101,16 +100,13 @@ function NbOpensim(){
 	// on se connecte à MySQL
 	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
 	mysql_select_db($database,$db);
-	$sql = "SELECT * FROM moteurs";
-	
-	$nb_journee="SELECT COUNT(DISTINCT id_os) AS compteur FROM moteurs";
-	$req=mysql_query($nb_journee); 
+	$cpt="SELECT COUNT(DISTINCT id_os) AS compteur FROM moteurs";
+	$req=mysql_query($cpt); 
 	$tab=mysql_fetch_array($req) ;
 	$Version = $tab["compteur"];
 	return $Version;
 }
 //*************************************************************************************
-
 function DownloadFile($filename) {
 
 echo $filename ;
@@ -159,7 +155,6 @@ return true;
 
 }
 
-
 function exec_command($commande){
 	$output = shell_exec($commande);
 	return $output;
@@ -171,5 +166,22 @@ function GenUUID() {
 	mt_rand( 0, 0x0fff ) | 0x4000,
 	mt_rand( 0, 0x3fff ) | 0x8000,
 	mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ) );
+}
+
+function Test_Url($server)
+{
+// Temps avant expiration du test de connexion 
+define('TIMEOUT', 10); 
+ 
+	$tab = parse_url($server); 
+	$tab['port'] = isset($tab['port']) ? $tab['port'] : 40; 
+	if(false !== ($fp = fsockopen($tab['host'], $tab['port'], $errno, $errstr, TIMEOUT))) { 
+		fclose($fp); 
+		//echo 'Location: ' . $server; 
+		return 1;
+	} else { 
+		//echo 'Erreur #' . $errno . ' : ' . $errstr; 
+		return 0;
+	} 
 }
 ?>

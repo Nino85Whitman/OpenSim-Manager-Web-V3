@@ -74,9 +74,11 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>=3){ // v&eac
 			$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
 			mysql_select_db($database,$db);
 			$sql = 'SELECT * FROM moteurs';
+			$hypergrid = "";
 			$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());	
 			while($data = mysql_fetch_assoc($req))
 			{
+			$hypergrid = $data['hypergrid'];
 				//echo '<hr>Serveur Name:'.$server[$key]['name'].'<br>'; 
 				// *** Lecture Fichier OpenSimDefaults.ini *** 
 				$filename2 = $data["address"].$FichierINIOpensim;		
@@ -102,7 +104,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>=3){ // v&eac
 					while (list($keyA, $valA) = each($tableauIni))
 					{
 						$ImgMap = "http://".$hostnameSSH.":".trim($srvOS)."/index.php?method=regionImage".str_replace("-","",$tableauIni[$keyA]['RegionUUID']);
-						$cmdUrl = $ipdest.'?'.'osmw=REGA&srvip='.$hostnameSSH.'&uuid='.$tableauIni[$keyA]['RegionUUID'].'&coord='.$tableauIni[$keyA]['Location'].'&simul='.$data['id_os'].'&img='.$ImgMap.'&region='.urlencode($keyA);
+						$cmdUrl = $ipdest.'?'.'osmw=REGA&srvip='.$hostnameSSH.'&uuid='.$tableauIni[$keyA]['RegionUUID'].'&coord='.$tableauIni[$keyA]['Location'].'&simul='.$data['id_os'].'&img='.$ImgMap.'&region='.urlencode($keyA).'&hgurl='.$hypergrid;
 						$content2 = file_get_contents( $cmdUrl);
 					}
 			}
